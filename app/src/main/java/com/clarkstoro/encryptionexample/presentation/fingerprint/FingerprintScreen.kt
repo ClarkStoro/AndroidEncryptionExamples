@@ -187,19 +187,48 @@ fun FingerprintScreen(viewModel: BiometricScreenViewModel) {
                     context,
                     encryptCipher
                 ) { cipher ->
-                    viewModel.encryptAuthArrayMode(textToEncryptDecrypt, cipher)
+                    when (selectedMode) {
+                        CommonViewModel.CryptMode.APPEND -> {
+                            viewModel.encryptAuthAppendMode(textToEncryptDecrypt, cipher)
+                        }
+                        CommonViewModel.CryptMode.BYTE_ARRAY -> {
+                            viewModel.encryptAuthArrayMode(textToEncryptDecrypt, cipher)
+                        }
+                        else -> {}
+                    }
                 }
             }
             Spacer(modifier = Modifier.width(8.dp))
             BoilerplateDefaultButton(
                 textId = R.string.btn_decrypt
             ) {
-                val decryptCipher = viewModel.biometricCryptoManager.getDecryptCipherFromStringByteArrayMode(textToEncryptDecrypt)
-                showEncryptBiometricPrompt(
-                    context,
-                    decryptCipher
-                ) { cipher ->
-                    viewModel.decryptAuthArrayMode(textToEncryptDecrypt, cipher)
+
+
+                val decryptCipher = when(selectedMode) {
+                    CommonViewModel.CryptMode.APPEND -> {
+                        viewModel.biometricCryptoManager.getDecryptCipherFromStringAppendMode(textToEncryptDecrypt)
+                    }
+                    CommonViewModel.CryptMode.BYTE_ARRAY -> {
+                        viewModel.biometricCryptoManager.getDecryptCipherFromStringByteArrayMode(textToEncryptDecrypt)
+                    }
+                    else -> null
+                }
+
+                decryptCipher?.let {
+                    showEncryptBiometricPrompt(
+                        context,
+                        decryptCipher
+                    ) { cipher ->
+                        when (selectedMode) {
+                            CommonViewModel.CryptMode.APPEND -> {
+                                viewModel.decryptAuthAppendMode(textToEncryptDecrypt, cipher)
+                            }
+                            CommonViewModel.CryptMode.BYTE_ARRAY -> {
+                                viewModel.decryptAuthArrayMode(textToEncryptDecrypt, cipher)
+                            }
+                            else -> {}
+                        }
+                    }
                 }
             }
         }

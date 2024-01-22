@@ -134,10 +134,7 @@ class BiometricCryptoManager {
 
     fun decryptStringAppendMode(decryptCipher: Cipher, strToDecode: String): String? {
         return try {
-            val ivAndCipherTextSplit = strToDecode.split(APPEND_SEPARATOR)
-            val iv = Base64.decode(ivAndCipherTextSplit[0], Base64.DEFAULT)
-            val cipherText = Base64.decode(ivAndCipherTextSplit[1], Base64.DEFAULT)
-
+            val cipherText = splitEncryptedDataAppendMode(strToDecode).cipherText
             val plainText = decryptCipher.doFinal(cipherText)
 
             return String(plainText, StandardCharsets.UTF_8)
