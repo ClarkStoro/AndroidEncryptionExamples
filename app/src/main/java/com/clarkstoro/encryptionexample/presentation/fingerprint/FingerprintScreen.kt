@@ -186,13 +186,13 @@ fun FingerprintScreen(viewModel: BiometricScreenViewModel) {
                 showEncryptBiometricPrompt(
                     context,
                     encryptCipher
-                ) { cipher ->
+                ) {
                     when (selectedMode) {
                         CommonViewModel.CryptMode.APPEND -> {
-                            viewModel.encryptAuthAppendMode(textToEncryptDecrypt, cipher)
+                            viewModel.encryptAuthAppendMode(textToEncryptDecrypt, encryptCipher)
                         }
                         CommonViewModel.CryptMode.BYTE_ARRAY -> {
-                            viewModel.encryptAuthArrayMode(textToEncryptDecrypt, cipher)
+                            viewModel.encryptAuthArrayMode(textToEncryptDecrypt, encryptCipher)
                         }
                         else -> {}
                     }
@@ -218,13 +218,13 @@ fun FingerprintScreen(viewModel: BiometricScreenViewModel) {
                     showEncryptBiometricPrompt(
                         context,
                         decryptCipher
-                    ) { cipher ->
+                    ) {
                         when (selectedMode) {
                             CommonViewModel.CryptMode.APPEND -> {
-                                viewModel.decryptAuthAppendMode(textToEncryptDecrypt, cipher)
+                                viewModel.decryptAuthAppendMode(textToEncryptDecrypt, decryptCipher)
                             }
                             CommonViewModel.CryptMode.BYTE_ARRAY -> {
-                                viewModel.decryptAuthArrayMode(textToEncryptDecrypt, cipher)
+                                viewModel.decryptAuthArrayMode(textToEncryptDecrypt, decryptCipher)
                             }
                             else -> {}
                         }
@@ -264,7 +264,7 @@ private fun showEncryptBiometricPrompt(
     cipher: Cipher,
     onFailed: (() -> Unit)? = null,
     onError: (() -> Unit)? = null,
-    onSuccess: (Cipher) -> Unit
+    onSuccess: () -> Unit
 ) {
 
     val biometricPromptEncrypt = BiometricPrompt(
@@ -278,11 +278,7 @@ private fun showEncryptBiometricPrompt(
 
             override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
                 super.onAuthenticationSucceeded(result)
-                result.cryptoObject?.cipher?.let { cipher ->
-                    onSuccess(cipher)
-                } ?: run {
-                    onError?.invoke()
-                }
+                onSuccess()
             }
 
             override fun onAuthenticationFailed() {

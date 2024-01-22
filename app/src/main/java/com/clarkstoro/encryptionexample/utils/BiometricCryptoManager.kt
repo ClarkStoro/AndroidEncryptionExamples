@@ -62,14 +62,16 @@ class BiometricCryptoManager {
     /**
      * @return Cipher for Decryption with biometric by obtaining the IV from the text encrypted
      */
-    fun getDecryptCipherFromStringAppendMode(encryptedText: String): Cipher {
-        val iv = splitEncryptedDataAppendMode(encryptedText).iv
-        return getDecryptCipherForIv(iv)
+    fun getDecryptCipherFromStringAppendMode(encryptedText: String): Cipher? {
+        return splitEncryptedDataAppendMode(encryptedText)?.iv?.let { iv ->
+            getDecryptCipherForIv(iv)
+        }
     }
 
-    fun getDecryptCipherFromStringByteArrayMode(encryptedText: String): Cipher {
-        val iv = splitEncryptedDataArrayMode(encryptedText).iv
-        return getDecryptCipherForIv(iv)
+    fun getDecryptCipherFromStringByteArrayMode(encryptedText: String): Cipher? {
+        return splitEncryptedDataArrayMode(encryptedText)?.iv?.let { iv ->
+            getDecryptCipherForIv(iv)
+        }
     }
 
     private fun getDecryptCipherForIv(initializationVector: ByteArray): Cipher {
@@ -134,7 +136,7 @@ class BiometricCryptoManager {
 
     fun decryptStringAppendMode(decryptCipher: Cipher, strToDecode: String): String? {
         return try {
-            val cipherText = splitEncryptedDataAppendMode(strToDecode).cipherText
+            val cipherText = splitEncryptedDataAppendMode(strToDecode)?.cipherText
             val plainText = decryptCipher.doFinal(cipherText)
 
             return String(plainText, StandardCharsets.UTF_8)
@@ -170,7 +172,7 @@ class BiometricCryptoManager {
 
     fun decryptFromStringByteArrayMode(decryptCipher: Cipher, stringToDecode: String): ByteArray? {
         return try {
-            val cipherTextBytes = splitEncryptedDataArrayMode(stringToDecode).cipherText
+            val cipherTextBytes = splitEncryptedDataArrayMode(stringToDecode)?.cipherText
             decryptCipher.doFinal(cipherTextBytes)
         } catch (e: Exception) {
             Timber.e("Error: failed to decrypt string - Byte Array Mode:\n$e")
@@ -184,28 +186,36 @@ class BiometricCryptoManager {
      * Utils
      */
 
-    private fun splitEncryptedDataAppendMode(encryptedText: String): EncryptedData {
-        val ivAndCipherTextSplit = encryptedText.split(APPEND_SEPARATOR)
-        val iv = Base64.decode(ivAndCipherTextSplit[0], Base64.DEFAULT)
-        val cipherText = Base64.decode(ivAndCipherTextSplit[1], Base64.DEFAULT)
+    private fun splitEncryptedDataAppendMode(encryptedText: String): EncryptedData? {
+        return try {
+            val ivAndCipherTextSplit = encryptedText.split(APPEND_SEPARATOR)
+            val iv = Base64.decode(ivAndCipherTextSplit[0], Base64.DEFAULT)
+            val cipherText = Base64.decode(ivAndCipherTextSplit[1], Base64.DEFAULT)
 
-        return EncryptedData(iv, cipherText)
+            return EncryptedData(iv, cipherText)
+        } catch (e: Exception) {
+            null
+        }
     }
 
 
-    private fun splitEncryptedDataArrayMode(encryptedText: String): EncryptedData {
-        val decodedString = Base64.decode(encryptedText, Base64.DEFAULT)
-        val inputStream = ByteArrayInputStream(decodedString)
-        return inputStream.use {
-            val ivSize = it.read()
-            val iv = ByteArray(ivSize)
-            it.read(iv)
+    private fun splitEncryptedDataArrayMode(encryptedText: String): EncryptedData? {
+        return try {
+            val decodedString = Base64.decode(encryptedText, Base64.DEFAULT)
+            val inputStream = ByteArrayInputStream(decodedString)
+            return inputStream.use {
+                val ivSize = it.read()
+                val iv = ByteArray(ivSize)
+                it.read(iv)
 
-            val cipherTextBytesSize = it.read()
-            val cipherTextBytes = ByteArray(cipherTextBytesSize)
-            it.read(cipherTextBytes)
+                val cipherTextBytesSize = it.read()
+                val cipherTextBytes = ByteArray(cipherTextBytesSize)
+                it.read(cipherTextBytes)
 
-            EncryptedData(iv, cipherTextBytes)
+                EncryptedData(iv, cipherTextBytes)
+            }
+        } catch (e: Exception) {
+           null
         }
     }
 
