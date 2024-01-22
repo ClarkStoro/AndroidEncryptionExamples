@@ -3,6 +3,7 @@ package com.clarkstoro.encryptionexample.utils
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import android.util.Base64
+import timber.log.Timber
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
@@ -93,30 +94,41 @@ class CryptoManager {
     }
 
 
-    fun encryptStringSillyMode(plainText: String): String {
-        val encryptCipher = getEncryptCipher()
-        val cipherText = Base64.encodeToString(encryptCipher.doFinal(plainText.toByteArray()), Base64.DEFAULT)
-        val iv = Base64.encodeToString(
-            encryptCipher.parameters.getParameterSpec(GCMParameterSpec::class.java).iv,
-            Base64.DEFAULT
-        )
+    fun encryptStringAppendMode(plainText: String): String? {
+        return try {
+            val encryptCipher = getEncryptCipher()
+            val cipherText = encryptCipher.doFinal(plainText.toByteArray())
+            val cipherTextBase64 = Base64.encodeToString(cipherText, Base64.DEFAULT)
 
-        return "$iv$SILLY_SEPARATOR$cipherText"
+            val ivBase64 = Base64.encodeToString(
+                encryptCipher.iv,
+                Base64.DEFAULT
+            )
+
+            return "$ivBase64$SILLY_SEPARATOR$cipherTextBase64"
+        } catch (e: Exception) {
+            Timber.e("Error: failed to encrypt string - Append Mode:\n$e")
+            null
+        }
     }
 
-    fun decryptStringSillyMode(strToDecode: String): String {
-        val ivAndCipherTextSplitted = strToDecode.split(SILLY_SEPARATOR)
-        val iv = Base64.decode(ivAndCipherTextSplitted[0], Base64.DEFAULT)
-        val cipherText = Base64.decode(ivAndCipherTextSplitted[1], Base64.DEFAULT)
+    fun decryptStringAppendMode(strToDecode: String): String? {
+        return try {
+            val ivAndCipherTextSplitted = strToDecode.split(SILLY_SEPARATOR)
+            val iv = Base64.decode(ivAndCipherTextSplitted[0], Base64.DEFAULT)
+            val cipherText = Base64.decode(ivAndCipherTextSplitted[1], Base64.DEFAULT)
 
-        val plainText = getDecryptCipherForIv(iv).doFinal(cipherText)
+            val plainText = getDecryptCipherForIv(iv).doFinal(cipherText)
 
-        return String(plainText, StandardCharsets.UTF_8)
+            return String(plainText, StandardCharsets.UTF_8)
+        } catch (e: Exception) {
+            Timber.e("Error: failed to decrypt string - Append Mode:\n$e")
+            null
+        }
     }
 
 
-
-    fun encryptToString(bytes: ByteArray): String {
+    fun encryptToStringByteArrayMode(bytes: ByteArray): String {
         val encryptCipher = getEncryptCipher()
         val cipherText = encryptCipher.doFinal(bytes)
         val outputStream = ByteArrayOutputStream()
@@ -130,8 +142,7 @@ class CryptoManager {
         return Base64.encodeToString(outputStream.toByteArray(), Base64.DEFAULT)
     }
 
-
-    fun decryptFromString(cipherText: String): ByteArray {
+    fun decryptFromStringByteArrayMode(cipherText: String): ByteArray {
         val aa = Base64.decode(cipherText, Base64.DEFAULT)
         val inputStream = ByteArrayInputStream(aa)
         return inputStream.use {
