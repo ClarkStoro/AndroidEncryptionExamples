@@ -1,4 +1,4 @@
-package com.clarkstoro.encryptionexample.presentation.home
+package com.clarkstoro.encryptionexample.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -10,8 +10,6 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
-import java.io.OutputStream
-import java.nio.charset.StandardCharsets
 import javax.inject.Inject
 
 @HiltViewModel

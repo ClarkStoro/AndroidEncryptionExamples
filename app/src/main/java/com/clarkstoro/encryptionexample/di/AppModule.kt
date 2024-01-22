@@ -2,6 +2,7 @@ package com.clarkstoro.encryptionexample.di
 
 import android.app.Application
 import android.content.Context
+import com.clarkstoro.encryptionexample.navigator.Navigator
 import com.clarkstoro.encryptionexample.providers.resource_provider.ResourceProvider
 import com.clarkstoro.encryptionexample.providers.resource_provider.ResourceProviderImpl
 import dagger.Module
@@ -22,5 +23,11 @@ internal object AppModule {
     @Singleton
     fun provideResourceProvider(@ApplicationContext context: Context): ResourceProvider {
         return ResourceProviderImpl(context)
+    }
+
+    @Singleton
+    @Provides
+    fun provideComposeNavigator(): Navigator {
+        return Navigator()
     }
 }

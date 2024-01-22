@@ -1,4 +1,4 @@
-package com.clarkstoro.encryptionexample.presentation.home
+package com.clarkstoro.encryptionexample.presentation.save_retrieve
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,7 +12,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -23,18 +22,25 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.sp
+import com.clarkstoro.encryptionexample.presentation.HomeScreenViewModel
 import com.clarkstoro.encryptionexample.ui.theme.Dimens
 import com.clarkstoro.encryptionexample.ui.theme.Orange500
 import com.clarkstoro.encryptionexample.ui.theme.Teal200
 
 @Composable
-fun HomeScreen(viewModel: HomeScreenViewModel) {
+fun SaveRetrieveScreen(viewModel: HomeScreenViewModel) {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
+        Text(
+            text = "SAVE RETRIEVE",
+            modifier = Modifier,
+            fontSize = 24.sp,
+            color = MaterialTheme.colorScheme.onSecondary
+        )
+        Spacer(modifier = Modifier)
         Text(
             text = "ENCRYPTION",
             modifier = Modifier,

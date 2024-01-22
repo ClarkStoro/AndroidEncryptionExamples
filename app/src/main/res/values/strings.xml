@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Boilerplate</string>
+    <string name="app_name">Android Encryption Demo</string>
     <string name="username">Username</string>
     <string name="email_hint">E-mail</string>
     <string name="password_hint">Password</string>
@@ -23,4 +23,7 @@
     <string name="tap_to_pwd">Tap to %1$s password</string>
 
 
+    <string name="bottom_nav_page1">Encrypt/Decrypt</string>
+    <string name="bottom_nav_page2">Save/Retrieve</string>
+    <string name="bottom_nav_page3">Fingerprint</string>
 </resources>
