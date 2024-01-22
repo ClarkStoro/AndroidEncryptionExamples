@@ -29,7 +29,7 @@ class CryptoManager {
 
         private const val GCM_BLOCK_MODE = KeyProperties.BLOCK_MODE_GCM
         private const val GCM_PADDING = KeyProperties.ENCRYPTION_PADDING_NONE
-        private const val GCM_TAG_LENGHT = 128
+        private const val GCM_TAG_LENGTH = 128
 
         private const val CBC_BLOCK_MODE = KeyProperties.BLOCK_MODE_CBC
         private const val CBC_PADDING = KeyProperties.ENCRYPTION_PADDING_PKCS7
@@ -39,10 +39,10 @@ class CryptoManager {
 
         private const val TRANSFORMATION = "$ALGORITHM/$CURRENT_BLOCK_MODE/$CURRENT_PADDING"
 
-        private const val ALIAS_KEY = "MY_ALIAS_KEY"
+        private const val ALIAS_KEY = "ENCRYPTION_ALIAS_KEY"
         private const val KEY_SIZE = 256
 
-        private const val SILLY_SEPARATOR = "|||"
+        private const val APPEND_SEPARATOR = "|||"
     }
 
 
@@ -56,15 +56,15 @@ class CryptoManager {
         }
     }
 
-    private fun getDecryptCipherForIv(iv: ByteArray): Cipher {
+    private fun getDecryptCipherForIv(initializationVector: ByteArray): Cipher {
         return Cipher.getInstance(TRANSFORMATION).apply {
             when(CURRENT_BLOCK_MODE) {
                 GCM_BLOCK_MODE -> {
-                    val gcmParameterSpec = GCMParameterSpec(GCM_TAG_LENGHT, iv)
+                    val gcmParameterSpec = GCMParameterSpec(GCM_TAG_LENGTH, initializationVector)
                     init(Cipher.DECRYPT_MODE, getKey(), gcmParameterSpec)
                 }
                 CBC_BLOCK_MODE -> {
-                    init(Cipher.DECRYPT_MODE, getKey(), IvParameterSpec(iv))
+                    init(Cipher.DECRYPT_MODE, getKey(), IvParameterSpec(initializationVector))
                 }
                 else -> {
                     throw Exception()
@@ -99,13 +99,12 @@ class CryptoManager {
             val encryptCipher = getEncryptCipher()
             val cipherText = encryptCipher.doFinal(plainText.toByteArray())
             val cipherTextBase64 = Base64.encodeToString(cipherText, Base64.DEFAULT)
-
             val ivBase64 = Base64.encodeToString(
                 encryptCipher.iv,
                 Base64.DEFAULT
             )
 
-            return "$ivBase64$SILLY_SEPARATOR$cipherTextBase64"
+            return "$ivBase64$APPEND_SEPARATOR$cipherTextBase64"
         } catch (e: Exception) {
             Timber.e("Error: failed to encrypt string - Append Mode:\n$e")
             null
@@ -114,11 +113,11 @@ class CryptoManager {
 
     fun decryptStringAppendMode(strToDecode: String): String? {
         return try {
-            val ivAndCipherTextSplitted = strToDecode.split(SILLY_SEPARATOR)
+            val ivAndCipherTextSplitted = strToDecode.split(APPEND_SEPARATOR)
             val iv = Base64.decode(ivAndCipherTextSplitted[0], Base64.DEFAULT)
             val cipherText = Base64.decode(ivAndCipherTextSplitted[1], Base64.DEFAULT)
 
-            val plainText = getDecryptCipherForIv(iv).doFinal(cipherText)
+            val plainText = getDecryptCipherForIv(initializationVector = iv).doFinal(cipherText)
 
             return String(plainText, StandardCharsets.UTF_8)
         } catch (e: Exception) {
@@ -128,60 +127,43 @@ class CryptoManager {
     }
 
 
-    fun encryptToStringByteArrayMode(bytes: ByteArray): String {
-        val encryptCipher = getEncryptCipher()
-        val cipherText = encryptCipher.doFinal(bytes)
-        val outputStream = ByteArrayOutputStream()
-        outputStream.use {
-            it.write(encryptCipher.iv.size)
-            it.write(encryptCipher.iv)
-            it.write(cipherText.size)
-            it.write(cipherText)
-        }
+    fun encryptToStringByteArrayMode(bytes: ByteArray): String? {
+        return try {
+            val encryptCipher = getEncryptCipher()
+            val cipherText = encryptCipher.doFinal(bytes)
+            val outputStream = ByteArrayOutputStream()
+            outputStream.use {
+                it.write(encryptCipher.iv.size)
+                it.write(encryptCipher.iv)
+                it.write(cipherText.size)
+                it.write(cipherText)
+            }
 
-        return Base64.encodeToString(outputStream.toByteArray(), Base64.DEFAULT)
-    }
-
-    fun decryptFromStringByteArrayMode(cipherText: String): ByteArray {
-        val aa = Base64.decode(cipherText, Base64.DEFAULT)
-        val inputStream = ByteArrayInputStream(aa)
-        return inputStream.use {
-            val ivSize = it.read()
-            val iv = ByteArray(ivSize)
-            it.read(iv)
-
-            val cipherBytesSize = it.read()
-            val cipherBytes = ByteArray(cipherBytesSize)
-            it.read(cipherBytes)
-
-            getDecryptCipherForIv(iv).doFinal(cipherBytes)
+            Base64.encodeToString(outputStream.toByteArray(), Base64.DEFAULT)
+        } catch (e: Exception) {
+            Timber.e("Error: failed to encrypt string - Byte Array Mode:\n$e")
+            null
         }
     }
 
+    fun decryptFromStringByteArrayMode(stringToDecode: String): ByteArray? {
+        return try {
+            val decodedString = Base64.decode(stringToDecode, Base64.DEFAULT)
+            val inputStream = ByteArrayInputStream(decodedString)
+            inputStream.use {
+                val ivSize = it.read()
+                val iv = ByteArray(ivSize)
+                it.read(iv)
 
-    fun encrypt(bytes: ByteArray, outputStream: OutputStream): ByteArray {
-        val encryptCipher = getEncryptCipher()
-        val cipherText = encryptCipher.doFinal(bytes)
-        outputStream.use {
-            it.write(encryptCipher.iv.size)
-            it.write(encryptCipher.iv)
-            it.write(cipherText.size)
-            it.write(cipherText)
-        }
-        return cipherText
-    }
+                val cipherTextBytesSize = it.read()
+                val cipherTextBytes = ByteArray(cipherTextBytesSize)
+                it.read(cipherTextBytes)
 
-    fun decrypt(inputStream: InputStream): ByteArray {
-        return inputStream.use {
-            val ivSize = it.read()
-            val iv = ByteArray(ivSize)
-            it.read(iv)
-
-            val cipherBytesSize = it.read()
-            val cipherBytes = ByteArray(cipherBytesSize)
-            it.read(cipherBytes)
-
-            getDecryptCipherForIv(iv).doFinal(cipherBytes)
+                getDecryptCipherForIv(initializationVector = iv).doFinal(cipherTextBytes)
+            }
+        } catch (e: Exception) {
+            Timber.e("Error: failed to decrypt string - Byte Array Mode:\n$e")
+            null
         }
     }
 }

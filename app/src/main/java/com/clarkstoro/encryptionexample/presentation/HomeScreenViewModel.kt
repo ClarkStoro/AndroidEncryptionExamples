@@ -39,13 +39,16 @@ class HomeScreenViewModel @Inject constructor(
              */
 
             // BYTE ARRAY IMPL - OK
+            /*cryptoManager.encryptToStringByteArrayMode(plainText.toByteArray())?.let { cipherText ->
+                Timber.d("MIO TEST - cipherText: $cipherText")
 
-            val cipherText = cryptoManager.encryptToStringByteArrayMode(plainText.toByteArray())
-            Timber.d("MIO TEST - cipherText: $cipherText")
+                cryptoManager.decryptFromStringByteArrayMode(cipherText)?.let { plainTextDecryptedBytes ->
+                    val plainTextDecrypted = String(plainTextDecryptedBytes, StandardCharsets.UTF_8)
+                    Timber.d("MIO TEST - plain text decrypted: $plainTextDecrypted")
+                }
+            }*/
 
-            val plainTextDecryptedBytes = cryptoManager.decryptFromStringByteArrayMode(cipherText)
-            val plainTextDecrypted = String(plainTextDecryptedBytes, StandardCharsets.UTF_8)
-            Timber.d("MIO TEST - plain text decrypted: $plainTextDecrypted")
+
 
             // Valori di pixel dell'immagine
             /*val pixelValues = intArrayOf(1, 2, 3, 4)
@@ -77,9 +80,9 @@ class HomeScreenViewModel @Inject constructor(
      */
 
     fun encryptTextAppendingMode(plainText: String) {
-        cryptoManager.encryptStringAppendMode(plainText)?.let { cipherText ->
-            Timber.d("MIO TEST - cipherText: $cipherText")
-            cipherTextResultFlow.tryEmit(cipherText)
+        cryptoManager.encryptStringAppendMode(plainText)?.let { encryptedText ->
+            Timber.d("Append Mode - Encrypted Text (iv + cipher text): $encryptedText")
+            cipherTextResultFlow.tryEmit(encryptedText)
         } ?: run {
             cipherTextResultFlow.tryEmit("Error: could not encrypt text")
         }
@@ -87,7 +90,7 @@ class HomeScreenViewModel @Inject constructor(
 
     fun decryptAppendingMode(textToDecrypt: String) {
         cryptoManager.decryptStringAppendMode(textToDecrypt)?.let { plainTextDecryptedBytes ->
-            Timber.d("MIO TEST - plain text decrypted: $plainTextDecryptedBytes")
+            Timber.d("Append Mode - Decrypted Plain Text: $plainTextDecryptedBytes")
             cipherTextResultFlow.tryEmit(plainTextDecryptedBytes)
         } ?: run {
             cipherTextResultFlow.tryEmit("Error: could not decrypt text")
@@ -101,17 +104,21 @@ class HomeScreenViewModel @Inject constructor(
      */
 
     fun encryptTextArrayMode(plainText: String) {
-        val cipherText = cryptoManager.encryptToStringByteArrayMode(plainText.toByteArray())
-        Timber.d("MIO TEST - cipherText: $cipherText")
-        cipherTextResultFlow.tryEmit(cipherText)
+        cryptoManager.encryptToStringByteArrayMode(plainText.toByteArray())?.let { encryptedText ->
+            Timber.d("Byte Array Mode - Encrypted Text (iv + cipher text): $encryptedText")
+            cipherTextResultFlow.tryEmit(encryptedText)
+        } ?: run {
+            cipherTextResultFlow.tryEmit("Error: could not encrypt text")
+        }
     }
 
     fun decryptArrayMode(textToDecrypt: String) {
-        val plainTextDecryptedBytes = cryptoManager.decryptFromStringByteArrayMode(textToDecrypt)
-        val plainTextDecrypted = String(plainTextDecryptedBytes, StandardCharsets.UTF_8)
-        Timber.d("MIO TEST - plain text decrypted: $plainTextDecrypted")
-
-        cipherTextResultFlow.tryEmit(plainTextDecrypted)
+        cryptoManager.decryptFromStringByteArrayMode(textToDecrypt)?.let { plainTextDecryptedBytes ->
+            val plainTextDecrypted = String(plainTextDecryptedBytes, StandardCharsets.UTF_8)
+            Timber.d("Byte Array Mode - Decrypted Plain Text: $plainTextDecrypted")
+            cipherTextResultFlow.tryEmit(plainTextDecrypted)
+        } ?: run {
+            cipherTextResultFlow.tryEmit("Error: could not decrypt text")
+        }
     }
-
 }
