@@ -10,6 +10,7 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
+import java.nio.charset.StandardCharsets
 import javax.inject.Inject
 
 @HiltViewModel
@@ -23,10 +24,10 @@ class HomeScreenViewModel @Inject constructor(
 
 
     init {
-        encryptText("Hello world!")
+        //encryptText("Hello world!")
     }
 
-    fun encryptText(plainText: String) {
+    fun encryptTextTest(plainText: String) {
         viewModelScope.launch {
             delay(1000)
 
@@ -42,18 +43,16 @@ class HomeScreenViewModel @Inject constructor(
              */
 
             // BYTE ARRAY IMPL - OK
-            /*
+
             val cipherText = cryptoManager.encryptToString(plainText.toByteArray())
             Timber.d("MIO TEST - cipherText: $cipherText")
 
             val plainTextDecryptedBytes = cryptoManager.decryptFromString(cipherText)
             val plainTextDecrypted = String(plainTextDecryptedBytes, StandardCharsets.UTF_8)
             Timber.d("MIO TEST - plain text decrypted: $plainTextDecrypted")
-            */
-
 
             // Valori di pixel dell'immagine
-            val pixelValues = intArrayOf(1, 2, 3, 4)
+            /*val pixelValues = intArrayOf(1, 2, 3, 4)
 
             // Converte i valori di pixel in un array di byte
             val byteArray = ByteArray(pixelValues.size) { pixelValues[it].toByte() }
@@ -71,10 +70,26 @@ class HomeScreenViewModel @Inject constructor(
             val plainImage = cryptoManager.decrypt(inputStream)
 
             Timber.d("MIO TEST - plain image: ${plainImage.joinToString(", ")}")
-
+*/
 
 
         }
+    }
+
+    fun encryptText(plainText: String) {
+        val cipherText = cryptoManager.encryptToString(plainText.toByteArray())
+        Timber.d("MIO TEST - cipherText: $cipherText")
+
+        cipherTextResultFlow.tryEmit(cipherText)
+    }
+
+
+    fun decrypt(textToDecrypt: String) {
+        val plainTextDecryptedBytes = cryptoManager.decryptFromString(textToDecrypt)
+        val plainTextDecrypted = String(plainTextDecryptedBytes, StandardCharsets.UTF_8)
+        Timber.d("MIO TEST - plain text decrypted: $plainTextDecrypted")
+
+        cipherTextResultFlow.tryEmit(plainTextDecrypted)
     }
 
 }
