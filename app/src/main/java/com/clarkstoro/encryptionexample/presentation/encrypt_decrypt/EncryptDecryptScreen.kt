@@ -6,6 +6,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -35,8 +38,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.clarkstoro.encryptionexample.R
 import com.clarkstoro.encryptionexample.presentation.HomeScreenViewModel
@@ -46,20 +49,17 @@ import com.clarkstoro.encryptionexample.ui.theme.Dimens
 import com.clarkstoro.encryptionexample.ui.theme.Orange500
 import com.clarkstoro.encryptionexample.ui.theme.Teal200
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun EncryptDecryptScreen(viewModel: HomeScreenViewModel) {
     val context = LocalContext.current
+    val focusManager = LocalFocusManager.current
 
     val textResult = viewModel.cipherTextResultFlow.collectAsState().value
 
     var dropdownExpandedState by remember { mutableStateOf(false) }
 
-    val modesAvailable = mutableListOf<HomeScreenViewModel.CryptMode>().apply {
-        addAll(HomeScreenViewModel.CryptMode.entries.map {
-            it
-        })
-    }
+    val modesAvailable = HomeScreenViewModel.CryptMode.entries
 
     var selectedMode: HomeScreenViewModel.CryptMode? by remember {
         mutableStateOf(modesAvailable.firstOrNull())
@@ -70,18 +70,21 @@ fun EncryptDecryptScreen(viewModel: HomeScreenViewModel) {
     }
 
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(24.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "ENCRYPT DECRYPT",
+            text = stringResource(id = R.string.bottom_nav_page1),
             modifier = Modifier,
             fontSize = 24.sp,
             color = MaterialTheme.colorScheme.onSecondary
         )
-        Spacer(modifier = Modifier)
+        Spacer(modifier = Modifier.height(20.dp))
 
+        // Mode Selector
         ExposedDropdownMenuBox(
             modifier = Modifier.fillMaxWidth(),
             expanded = dropdownExpandedState,
@@ -89,6 +92,10 @@ fun EncryptDecryptScreen(viewModel: HomeScreenViewModel) {
         ) {
             androidx.compose.material.OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Done
+                ),
+                keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
                 value = selectedMode?.name.orEmpty(),
                 readOnly = true,
                 onValueChange = { },
@@ -120,7 +127,9 @@ fun EncryptDecryptScreen(viewModel: HomeScreenViewModel) {
             }
         }
 
+        // Input Encryption/Decryption
         InputItem(
+            modifier = Modifier.fillMaxWidth(),
             value = textToEncryptDecrypt,
             label = stringResource(id = R.string.encrypt_decrypt_hint),
             trailingIcon = {
@@ -136,8 +145,9 @@ fun EncryptDecryptScreen(viewModel: HomeScreenViewModel) {
         ) {
             textToEncryptDecrypt = it
         }
-        Spacer(modifier = Modifier)
+        Spacer(modifier = Modifier.height(10.dp))
 
+        // Buttons
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
@@ -155,6 +165,7 @@ fun EncryptDecryptScreen(viewModel: HomeScreenViewModel) {
                     else -> {}
                 }
             }
+            Spacer(modifier = Modifier.width(8.dp))
             BoilerplateDefaultButton(
                 textId = R.string.btn_decrypt
             ) {
@@ -169,17 +180,22 @@ fun EncryptDecryptScreen(viewModel: HomeScreenViewModel) {
                 }
             }
         }
-        Spacer(modifier = Modifier)
-        Text(
-            text = textResult,
-            modifier = Modifier,
-            color = MaterialTheme.colorScheme.onSecondary
-        )
-        Spacer(modifier = Modifier)
+        Spacer(modifier = Modifier.height(18.dp))
+
+        // Result Encryption/Decryption
+        InputItem(
+            modifier = Modifier.fillMaxWidth(),
+            value = textResult,
+            label = stringResource(id = R.string.result_encryption_decryption_hint),
+            isReadOnly = true
+        ) {}
+        Spacer(modifier = Modifier.height(10.dp))
+
+        // Button Copy to Clipboard
         BoilerplateDefaultButton(
             textId = R.string.btn_copy_to_clipboard
         ) {
-            copyToClipboard(context, "Result", textResult)
+            copyToClipboard(context, "Result Encryption/Decryption", textResult)
         }
     }
 }
@@ -188,9 +204,10 @@ fun EncryptDecryptScreen(viewModel: HomeScreenViewModel) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun InputItem(
+    modifier: Modifier,
     value: String,
     label: String,
-    isPasswordField: Boolean = false,
+    isReadOnly: Boolean = false,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     trailingIcon: @Composable (() -> Unit)? = null,
     onValueChange: (String) -> Unit
@@ -202,13 +219,13 @@ private fun InputItem(
         label = { Text(text = label) },
         onValueChange = onValueChange,
         keyboardOptions = KeyboardOptions(
-            keyboardType = if (isPasswordField) KeyboardType.Password else KeyboardType.Email,
             imeAction = ImeAction.Done
         ),
         keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
         visualTransformation = visualTransformation,
         trailingIcon = trailingIcon,
-        singleLine = true,
+        singleLine = false,
+        readOnly = isReadOnly,
         shape = RoundedCornerShape(CornerSize(Dimens.size4)),
         colors = TextFieldDefaults.textFieldColors(
             containerColor = MaterialTheme.colorScheme.background,
@@ -216,6 +233,6 @@ private fun InputItem(
             unfocusedIndicatorColor = Teal200,
             textColor = MaterialTheme.colorScheme.onSecondary
         ),
-        modifier = Modifier
+        modifier = modifier
     )
 }
