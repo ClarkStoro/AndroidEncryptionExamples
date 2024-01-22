@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Android Encryption Demo</string>
+    <string name="app_name">Encryption Example Demo</string>
     <string name="username">Username</string>
     <string name="email_hint">E-mail</string>
     <string name="password_hint">Password</string>

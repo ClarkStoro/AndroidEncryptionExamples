@@ -5,7 +5,7 @@ import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
 
 @HiltAndroidApp
-class BitrockApplication : Application() {
+class EncryptionExampleApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
