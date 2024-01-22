@@ -31,4 +31,5 @@
     <string name="btn_decrypt">DECRYPT</string>
     <string name="btn_copy_to_clipboard">COPY TO CLIPBOARD</string>
     <string name="encrypt_decrypt_hint">Input a text to encrypt or decrypt</string>
+    <string name="pick_mode_hint">Pick an encryption/decryption mode</string>
 </resources>

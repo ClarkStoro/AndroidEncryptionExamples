@@ -5,15 +5,19 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.DropdownMenuItem
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ExposedDropdownMenuBox
+import androidx.compose.material.ExposedDropdownMenuDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -42,11 +46,24 @@ import com.clarkstoro.encryptionexample.ui.theme.Dimens
 import com.clarkstoro.encryptionexample.ui.theme.Orange500
 import com.clarkstoro.encryptionexample.ui.theme.Teal200
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun EncryptDecryptScreen(viewModel: HomeScreenViewModel) {
     val context = LocalContext.current
 
     val textResult = viewModel.cipherTextResultFlow.collectAsState().value
+
+    var dropdownExpandedState by remember { mutableStateOf(false) }
+
+    val modesAvailable = mutableListOf<HomeScreenViewModel.CryptMode>().apply {
+        addAll(HomeScreenViewModel.CryptMode.entries.map {
+            it
+        })
+    }
+
+    var selectedMode: HomeScreenViewModel.CryptMode? by remember {
+        mutableStateOf(modesAvailable.firstOrNull())
+    }
 
     var textToEncryptDecrypt by remember {
         mutableStateOf("")
@@ -64,6 +81,44 @@ fun EncryptDecryptScreen(viewModel: HomeScreenViewModel) {
             color = MaterialTheme.colorScheme.onSecondary
         )
         Spacer(modifier = Modifier)
+
+        ExposedDropdownMenuBox(
+            modifier = Modifier.fillMaxWidth(),
+            expanded = dropdownExpandedState,
+            onExpandedChange = {dropdownExpandedState = !dropdownExpandedState}
+        ) {
+            androidx.compose.material.OutlinedTextField(
+                modifier = Modifier.fillMaxWidth(),
+                value = selectedMode?.name.orEmpty(),
+                readOnly = true,
+                onValueChange = { },
+                label = { androidx.compose.material.Text(stringResource(id = R.string.pick_mode_hint)) },
+                trailingIcon = {
+                    ExposedDropdownMenuDefaults.TrailingIcon(
+                        expanded = dropdownExpandedState
+                    )
+                }
+            )
+            ExposedDropdownMenu(
+                expanded = dropdownExpandedState,
+                onDismissRequest = {
+                    dropdownExpandedState = false
+                }
+            ) {
+                modesAvailable.forEach { modeAvailable ->
+                    DropdownMenuItem(
+                        onClick = {
+                            selectedMode = modeAvailable
+                            dropdownExpandedState = false
+                        }
+                    ) {
+                        Text(
+                            text = modeAvailable.name
+                        )
+                    }
+                }
+            }
+        }
 
         InputItem(
             value = textToEncryptDecrypt,
@@ -90,12 +145,28 @@ fun EncryptDecryptScreen(viewModel: HomeScreenViewModel) {
             BoilerplateDefaultButton(
                 textId = R.string.btn_encrypt
             ) {
-                viewModel.encryptText(textToEncryptDecrypt)
+                when (selectedMode) {
+                    HomeScreenViewModel.CryptMode.APPEND -> {
+                        viewModel.encryptTextAppendingMode(textToEncryptDecrypt)
+                    }
+                    HomeScreenViewModel.CryptMode.BYTE_ARRAY -> {
+                        viewModel.encryptTextArrayMode(textToEncryptDecrypt)
+                    }
+                    else -> {}
+                }
             }
             BoilerplateDefaultButton(
                 textId = R.string.btn_decrypt
             ) {
-                viewModel.decrypt(textToEncryptDecrypt)
+                when (selectedMode) {
+                    HomeScreenViewModel.CryptMode.APPEND -> {
+                        viewModel.decryptAppendingMode(textToEncryptDecrypt)
+                    }
+                    HomeScreenViewModel.CryptMode.BYTE_ARRAY -> {
+                        viewModel.decryptArrayMode(textToEncryptDecrypt)
+                    }
+                    else -> {}
+                }
             }
         }
         Spacer(modifier = Modifier)

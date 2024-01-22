@@ -8,24 +8,20 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
 import java.nio.charset.StandardCharsets
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeScreenViewModel @Inject constructor(
-
+    private val cryptoManager: CryptoManager
 ) : ViewModel() {
 
-    private val cryptoManager = CryptoManager()
+    enum class CryptMode {
+        APPEND,
+        BYTE_ARRAY
+    }
 
     val cipherTextResultFlow = MutableStateFlow("")
-
-
-    init {
-        //encryptText("Hello world!")
-    }
 
     fun encryptTextTest(plainText: String) {
         viewModelScope.launch {
@@ -76,15 +72,36 @@ class HomeScreenViewModel @Inject constructor(
         }
     }
 
-    fun encryptText(plainText: String) {
-        val cipherText = cryptoManager.encryptToString(plainText.toByteArray())
-        Timber.d("MIO TEST - cipherText: $cipherText")
+    /**
+     * MODE = String append
+     */
 
+    fun encryptTextAppendingMode(plainText: String) {
+        val cipherText = cryptoManager.encryptStringSillyMode(plainText)
+        Timber.d("MIO TEST - cipherText: $cipherText")
         cipherTextResultFlow.tryEmit(cipherText)
     }
 
+    fun decryptAppendingMode(textToDecrypt: String) {
+        val plainTextDecryptedBytes = cryptoManager.decryptStringSillyMode(textToDecrypt)
+        Timber.d("MIO TEST - plain text decrypted: $plainTextDecryptedBytes")
 
-    fun decrypt(textToDecrypt: String) {
+        cipherTextResultFlow.tryEmit(plainTextDecryptedBytes)
+    }
+
+    // -------------------------------------------------------------------------
+
+    /**
+     * MODE = ByteArray
+     */
+
+    fun encryptTextArrayMode(plainText: String) {
+        val cipherText = cryptoManager.encryptToString(plainText.toByteArray())
+        Timber.d("MIO TEST - cipherText: $cipherText")
+        cipherTextResultFlow.tryEmit(cipherText)
+    }
+
+    fun decryptArrayMode(textToDecrypt: String) {
         val plainTextDecryptedBytes = cryptoManager.decryptFromString(textToDecrypt)
         val plainTextDecrypted = String(plainTextDecryptedBytes, StandardCharsets.UTF_8)
         Timber.d("MIO TEST - plain text decrypted: $plainTextDecrypted")

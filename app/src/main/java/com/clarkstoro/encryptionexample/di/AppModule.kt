@@ -5,6 +5,7 @@ import android.content.Context
 import com.clarkstoro.encryptionexample.navigator.Navigator
 import com.clarkstoro.encryptionexample.providers.resource_provider.ResourceProvider
 import com.clarkstoro.encryptionexample.providers.resource_provider.ResourceProviderImpl
+import com.clarkstoro.encryptionexample.utils.CryptoManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -30,4 +31,8 @@ internal object AppModule {
     fun provideComposeNavigator(): Navigator {
         return Navigator()
     }
+
+    @Singleton
+    @Provides
+    fun provideCryptoManager(): CryptoManager = CryptoManager()
 }
