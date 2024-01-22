@@ -22,13 +22,13 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.sp
-import com.clarkstoro.encryptionexample.presentation.HomeScreenViewModel
+import com.clarkstoro.encryptionexample.presentation.CommonViewModel
 import com.clarkstoro.encryptionexample.ui.theme.Dimens
 import com.clarkstoro.encryptionexample.ui.theme.Orange500
 import com.clarkstoro.encryptionexample.ui.theme.Teal200
 
 @Composable
-fun SaveRetrieveScreen(viewModel: HomeScreenViewModel) {
+fun SaveRetrieveScreen(viewModel: CommonViewModel) {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,

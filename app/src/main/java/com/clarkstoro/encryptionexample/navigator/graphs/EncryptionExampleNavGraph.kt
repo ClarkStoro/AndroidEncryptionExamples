@@ -17,7 +17,7 @@ import com.clarkstoro.encryptionexample.navigator.destinations.EncryptDecryptScr
 import com.clarkstoro.encryptionexample.navigator.destinations.FingerprintScreen
 import com.clarkstoro.encryptionexample.navigator.destinations.NavDestinationArgs
 import com.clarkstoro.encryptionexample.navigator.destinations.SaveRetrieveScreen
-import com.clarkstoro.encryptionexample.presentation.HomeScreenViewModel
+import com.clarkstoro.encryptionexample.presentation.CommonViewModel
 import com.clarkstoro.encryptionexample.presentation.encrypt_decrypt.EncryptDecryptScreen
 import com.clarkstoro.encryptionexample.presentation.fingerprint.FingerprintScreen
 import com.clarkstoro.encryptionexample.presentation.save_retrieve.SaveRetrieveScreen
@@ -61,20 +61,20 @@ fun EncryptionExampleNavGraph(
         ) {
             composable(EncryptDecryptScreen.route) { navBackStackEntry ->
                 // Creates a ViewModel from the current BackStackEntry
-                val eventViewModel = navBackStackEntry.sharedViewModel<HomeScreenViewModel>(navController = navController)
-                EncryptDecryptScreen(eventViewModel)
+                val commonViewModel = navBackStackEntry.sharedViewModel<CommonViewModel>(navController = navController)
+                EncryptDecryptScreen(commonViewModel)
             }
 
             composable(SaveRetrieveScreen.route) { navBackStackEntry ->
                 // Creates a ViewModel from the current BackStackEntry
-                val eventViewModel = navBackStackEntry.sharedViewModel<HomeScreenViewModel>(navController = navController)
-                SaveRetrieveScreen(eventViewModel)
+                val commonViewModel = navBackStackEntry.sharedViewModel<CommonViewModel>(navController = navController)
+                SaveRetrieveScreen(commonViewModel)
             }
 
             composable(FingerprintScreen.route) { navBackStackEntry ->
                 // Creates a ViewModel from the current BackStackEntry
-                val eventViewModel = navBackStackEntry.sharedViewModel<HomeScreenViewModel>(navController = navController)
-                FingerprintScreen(eventViewModel)
+                val commonViewModel = navBackStackEntry.sharedViewModel<CommonViewModel>(navController = navController)
+                FingerprintScreen(commonViewModel)
             }
         }
     }

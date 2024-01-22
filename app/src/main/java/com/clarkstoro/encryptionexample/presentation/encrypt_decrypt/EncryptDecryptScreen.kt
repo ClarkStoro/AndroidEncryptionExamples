@@ -42,7 +42,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.clarkstoro.encryptionexample.R
-import com.clarkstoro.encryptionexample.presentation.HomeScreenViewModel
+import com.clarkstoro.encryptionexample.presentation.CommonViewModel
 import com.clarkstoro.encryptionexample.presentation.common.BoilerplateDefaultButton
 import com.clarkstoro.encryptionexample.presentation.common.copyToClipboard
 import com.clarkstoro.encryptionexample.ui.theme.Dimens
@@ -51,7 +51,7 @@ import com.clarkstoro.encryptionexample.ui.theme.Teal200
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun EncryptDecryptScreen(viewModel: HomeScreenViewModel) {
+fun EncryptDecryptScreen(viewModel: CommonViewModel) {
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
 
@@ -59,9 +59,9 @@ fun EncryptDecryptScreen(viewModel: HomeScreenViewModel) {
 
     var dropdownExpandedState by remember { mutableStateOf(false) }
 
-    val modesAvailable = HomeScreenViewModel.CryptMode.entries
+    val modesAvailable = CommonViewModel.CryptMode.entries
 
-    var selectedMode: HomeScreenViewModel.CryptMode? by remember {
+    var selectedMode: CommonViewModel.CryptMode? by remember {
         mutableStateOf(modesAvailable.firstOrNull())
     }
 
@@ -156,10 +156,10 @@ fun EncryptDecryptScreen(viewModel: HomeScreenViewModel) {
                 textId = R.string.btn_encrypt
             ) {
                 when (selectedMode) {
-                    HomeScreenViewModel.CryptMode.APPEND -> {
+                    CommonViewModel.CryptMode.APPEND -> {
                         viewModel.encryptTextAppendingMode(textToEncryptDecrypt)
                     }
-                    HomeScreenViewModel.CryptMode.BYTE_ARRAY -> {
+                    CommonViewModel.CryptMode.BYTE_ARRAY -> {
                         viewModel.encryptTextArrayMode(textToEncryptDecrypt)
                     }
                     else -> {}
@@ -170,10 +170,10 @@ fun EncryptDecryptScreen(viewModel: HomeScreenViewModel) {
                 textId = R.string.btn_decrypt
             ) {
                 when (selectedMode) {
-                    HomeScreenViewModel.CryptMode.APPEND -> {
+                    CommonViewModel.CryptMode.APPEND -> {
                         viewModel.decryptAppendingMode(textToEncryptDecrypt)
                     }
-                    HomeScreenViewModel.CryptMode.BYTE_ARRAY -> {
+                    CommonViewModel.CryptMode.BYTE_ARRAY -> {
                         viewModel.decryptArrayMode(textToEncryptDecrypt)
                     }
                     else -> {}

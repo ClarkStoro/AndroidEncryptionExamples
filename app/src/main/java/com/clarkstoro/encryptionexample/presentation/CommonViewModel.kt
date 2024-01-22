@@ -12,7 +12,7 @@ import java.nio.charset.StandardCharsets
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeScreenViewModel @Inject constructor(
+class CommonViewModel @Inject constructor(
     private val cryptoManager: CryptoManager
 ) : ViewModel() {
 
