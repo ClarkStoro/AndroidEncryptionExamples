@@ -1,5 +1,6 @@
 package com.clarkstoro.encryptionexample.navigator.graphs
 
+import androidx.biometric.BiometricViewModel
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -19,6 +20,7 @@ import com.clarkstoro.encryptionexample.navigator.destinations.NavDestinationArg
 import com.clarkstoro.encryptionexample.navigator.destinations.SaveRetrieveScreen
 import com.clarkstoro.encryptionexample.presentation.CommonViewModel
 import com.clarkstoro.encryptionexample.presentation.encrypt_decrypt.EncryptDecryptScreen
+import com.clarkstoro.encryptionexample.presentation.fingerprint.BiometricScreenViewModel
 import com.clarkstoro.encryptionexample.presentation.fingerprint.FingerprintScreen
 import com.clarkstoro.encryptionexample.presentation.save_retrieve.SaveRetrieveScreen
 import kotlinx.coroutines.flow.launchIn
@@ -73,8 +75,8 @@ fun EncryptionExampleNavGraph(
 
             composable(FingerprintScreen.route) { navBackStackEntry ->
                 // Creates a ViewModel from the current BackStackEntry
-                val commonViewModel = navBackStackEntry.sharedViewModel<CommonViewModel>(navController = navController)
-                FingerprintScreen(commonViewModel)
+                val biometricViewModel = hiltViewModel<BiometricScreenViewModel>()
+                FingerprintScreen(biometricViewModel)
             }
         }
     }

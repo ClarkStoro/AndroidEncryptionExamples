@@ -203,7 +203,7 @@ fun EncryptDecryptScreen(viewModel: CommonViewModel) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun InputItem(
+fun InputItem(
     modifier: Modifier,
     value: String,
     label: String,

@@ -18,7 +18,7 @@ import javax.crypto.spec.GCMParameterSpec
 import javax.crypto.spec.IvParameterSpec
 
 
-class CryptoManager {
+class BiometricCryptoManager {
 
 
     companion object {
@@ -50,10 +50,26 @@ class CryptoManager {
         load(null)
     }
 
-    private fun getEncryptCipher(): Cipher {
+    /**
+     * @return Cipher for Encryption with biometric
+     */
+    fun getEncryptCipher(): Cipher {
         return Cipher.getInstance(TRANSFORMATION).apply {
             init(Cipher.ENCRYPT_MODE, getKey())
         }
+    }
+
+    /**
+     * @return Cipher for Decryption with biometric by obtaining the IV from the text encrypted
+     */
+    fun getDecryptCipherFromStringAppendMode(encryptedText: String): Cipher {
+        val iv = splitEncryptedDataAppendMode(encryptedText).iv
+        return getDecryptCipherForIv(iv)
+    }
+
+    fun getDecryptCipherFromStringByteArrayMode(encryptedText: String): Cipher {
+        val iv = splitEncryptedDataArrayMode(encryptedText).iv
+        return getDecryptCipherForIv(iv)
     }
 
     private fun getDecryptCipherForIv(initializationVector: ByteArray): Cipher {
@@ -88,15 +104,20 @@ class CryptoManager {
                 .setKeySize(KEY_SIZE)
                 .setBlockModes(CURRENT_BLOCK_MODE)
                 .setEncryptionPaddings(CURRENT_PADDING)
+                .setUserAuthenticationRequired(true)
                 .build()
             )
         }.generateKey()
     }
 
+    // ---------------------------------------------------------------------------------------------
 
-    fun encryptStringAppendMode(plainText: String): String? {
+    /**
+     * Append Mode
+     */
+
+    fun encryptStringAppendMode(encryptCipher: Cipher, plainText: String): String? {
         return try {
-            val encryptCipher = getEncryptCipher()
             val cipherText = encryptCipher.doFinal(plainText.toByteArray())
             val cipherTextBase64 = Base64.encodeToString(cipherText, Base64.DEFAULT)
             val ivBase64 = Base64.encodeToString(
@@ -111,13 +132,13 @@ class CryptoManager {
         }
     }
 
-    fun decryptStringAppendMode(strToDecode: String): String? {
+    fun decryptStringAppendMode(decryptCipher: Cipher, strToDecode: String): String? {
         return try {
             val ivAndCipherTextSplit = strToDecode.split(APPEND_SEPARATOR)
             val iv = Base64.decode(ivAndCipherTextSplit[0], Base64.DEFAULT)
             val cipherText = Base64.decode(ivAndCipherTextSplit[1], Base64.DEFAULT)
 
-            val plainText = getDecryptCipherForIv(initializationVector = iv).doFinal(cipherText)
+            val plainText = decryptCipher.doFinal(cipherText)
 
             return String(plainText, StandardCharsets.UTF_8)
         } catch (e: Exception) {
@@ -126,10 +147,14 @@ class CryptoManager {
         }
     }
 
+    // ---------------------------------------------------------------------------------------------
 
-    fun encryptToStringByteArrayMode(bytes: ByteArray): String? {
+    /**
+     * Byte Array Mode
+     */
+
+    fun encryptToStringByteArrayMode(encryptCipher: Cipher, bytes: ByteArray): String? {
         return try {
-            val encryptCipher = getEncryptCipher()
             val cipherText = encryptCipher.doFinal(bytes)
             val outputStream = ByteArrayOutputStream()
             outputStream.use {
@@ -146,24 +171,66 @@ class CryptoManager {
         }
     }
 
-    fun decryptFromStringByteArrayMode(stringToDecode: String): ByteArray? {
+    fun decryptFromStringByteArrayMode(decryptCipher: Cipher, stringToDecode: String): ByteArray? {
         return try {
-            val decodedString = Base64.decode(stringToDecode, Base64.DEFAULT)
-            val inputStream = ByteArrayInputStream(decodedString)
-            inputStream.use {
-                val ivSize = it.read()
-                val iv = ByteArray(ivSize)
-                it.read(iv)
-
-                val cipherTextBytesSize = it.read()
-                val cipherTextBytes = ByteArray(cipherTextBytesSize)
-                it.read(cipherTextBytes)
-
-                getDecryptCipherForIv(initializationVector = iv).doFinal(cipherTextBytes)
-            }
+            val cipherTextBytes = splitEncryptedDataArrayMode(stringToDecode).cipherText
+            decryptCipher.doFinal(cipherTextBytes)
         } catch (e: Exception) {
             Timber.e("Error: failed to decrypt string - Byte Array Mode:\n$e")
             null
+        }
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    /**
+     * Utils
+     */
+
+    private fun splitEncryptedDataAppendMode(encryptedText: String): EncryptedData {
+        val ivAndCipherTextSplit = encryptedText.split(APPEND_SEPARATOR)
+        val iv = Base64.decode(ivAndCipherTextSplit[0], Base64.DEFAULT)
+        val cipherText = Base64.decode(ivAndCipherTextSplit[1], Base64.DEFAULT)
+
+        return EncryptedData(iv, cipherText)
+    }
+
+
+    private fun splitEncryptedDataArrayMode(encryptedText: String): EncryptedData {
+        val decodedString = Base64.decode(encryptedText, Base64.DEFAULT)
+        val inputStream = ByteArrayInputStream(decodedString)
+        return inputStream.use {
+            val ivSize = it.read()
+            val iv = ByteArray(ivSize)
+            it.read(iv)
+
+            val cipherTextBytesSize = it.read()
+            val cipherTextBytes = ByteArray(cipherTextBytesSize)
+            it.read(cipherTextBytes)
+
+            EncryptedData(iv, cipherTextBytes)
+        }
+    }
+
+
+    data class EncryptedData(
+        val iv: ByteArray,
+        val cipherText: ByteArray
+    ) {
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (javaClass != other?.javaClass) return false
+
+            other as EncryptedData
+
+            if (!iv.contentEquals(other.iv)) return false
+            return cipherText.contentEquals(other.cipherText)
+        }
+
+        override fun hashCode(): Int {
+            var result = iv.contentHashCode()
+            result = 31 * result + cipherText.contentHashCode()
+            return result
         }
     }
 }
