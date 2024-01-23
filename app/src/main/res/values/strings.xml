@@ -25,12 +25,14 @@
 
     <string name="bottom_nav_page1">Encrypt/Decrypt</string>
     <string name="bottom_nav_page2">Save/Retrieve</string>
-    <string name="bottom_nav_page3">Fingerprint</string>
+    <string name="bottom_nav_page3">Biometric</string>
 
+    <!-- Common -->
     <string name="btn_encrypt">ENCRYPT</string>
     <string name="btn_decrypt">DECRYPT</string>
     <string name="btn_copy_to_clipboard">COPY TO CLIPBOARD</string>
     <string name="encrypt_decrypt_hint">Input a text to encrypt or decrypt</string>
     <string name="pick_mode_hint">Pick an encryption/decryption mode</string>
     <string name="result_encryption_decryption_hint">Result encryption/decryption</string>
+
 </resources>

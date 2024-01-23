@@ -1,6 +1,5 @@
 package com.clarkstoro.encryptionexample.navigator.graphs
 
-import androidx.biometric.BiometricViewModel
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -15,13 +14,14 @@ import androidx.navigation.compose.navigation
 import com.clarkstoro.encryptionexample.navigator.Navigator
 import com.clarkstoro.encryptionexample.navigator.Navigator.Companion.NAVIGATOR_KEY
 import com.clarkstoro.encryptionexample.navigator.destinations.EncryptDecryptScreen
-import com.clarkstoro.encryptionexample.navigator.destinations.FingerprintScreen
+import com.clarkstoro.encryptionexample.navigator.destinations.BiometricScreen
+import com.clarkstoro.encryptionexample.navigator.destinations.MAIN_NAVIGATION_ROUTE_KEY
 import com.clarkstoro.encryptionexample.navigator.destinations.NavDestinationArgs
 import com.clarkstoro.encryptionexample.navigator.destinations.SaveRetrieveScreen
 import com.clarkstoro.encryptionexample.presentation.CommonViewModel
 import com.clarkstoro.encryptionexample.presentation.encrypt_decrypt.EncryptDecryptScreen
 import com.clarkstoro.encryptionexample.presentation.fingerprint.BiometricScreenViewModel
-import com.clarkstoro.encryptionexample.presentation.fingerprint.FingerprintScreen
+import com.clarkstoro.encryptionexample.presentation.fingerprint.BiometricScreen
 import com.clarkstoro.encryptionexample.presentation.save_retrieve.SaveRetrieveScreen
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -53,13 +53,13 @@ fun EncryptionExampleNavGraph(
 
     NavHost(
         navController,
-        startDestination = "EVENT_NAVIGATION_ROUTE",
+        startDestination = MAIN_NAVIGATION_ROUTE_KEY,
         modifier = modifier
     ) {
 
         navigation(
             startDestination = EncryptDecryptScreen.route,
-            route = "EVENT_NAVIGATION_ROUTE"
+            route = MAIN_NAVIGATION_ROUTE_KEY
         ) {
             composable(EncryptDecryptScreen.route) { navBackStackEntry ->
                 // Creates a ViewModel from the current BackStackEntry
@@ -73,10 +73,10 @@ fun EncryptionExampleNavGraph(
                 SaveRetrieveScreen(commonViewModel)
             }
 
-            composable(FingerprintScreen.route) { navBackStackEntry ->
+            composable(BiometricScreen.route) { navBackStackEntry ->
                 // Creates a ViewModel from the current BackStackEntry
                 val biometricViewModel = hiltViewModel<BiometricScreenViewModel>()
-                FingerprintScreen(biometricViewModel)
+                BiometricScreen(biometricViewModel)
             }
         }
     }

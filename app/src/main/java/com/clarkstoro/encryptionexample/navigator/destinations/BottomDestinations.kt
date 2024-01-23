@@ -11,9 +11,9 @@ data object EncryptDecryptScreen: NavGraphDestinations(
     override val titleResId: Int
         get() = R.string.bottom_nav_page1
     override val selectedIconResId: Int
-        get() = R.drawable.settings
+        get() = R.drawable.ic_lock
     override val deselectedIconResId: Int
-        get() = R.drawable.settings
+        get() = R.drawable.ic_lock
 }
 
 data object SaveRetrieveScreen: NavGraphDestinations(
@@ -25,20 +25,20 @@ data object SaveRetrieveScreen: NavGraphDestinations(
     override val titleResId: Int
         get() = R.string.bottom_nav_page2
     override val selectedIconResId: Int
-        get() = R.drawable.settings
+        get() = R.drawable.ic_save
     override val deselectedIconResId: Int
-        get() = R.drawable.settings
+        get() = R.drawable.ic_save
 }
 
-data object FingerprintScreen: NavGraphDestinations(
-    route = NavGraphDestinationKeys.FINGERPRINT.name,
+data object BiometricScreen: NavGraphDestinations(
+    route = NavGraphDestinationKeys.BIOMETRIC.name,
     arguments = emptyList()
 ), BottomNavItem {
     // Bottom navigation
     override val titleResId: Int
         get() = R.string.bottom_nav_page3
     override val selectedIconResId: Int
-        get() = R.drawable.settings
+        get() = R.drawable.ic_biometric
     override val deselectedIconResId: Int
-        get() = R.drawable.settings
+        get() = R.drawable.ic_biometric
 }

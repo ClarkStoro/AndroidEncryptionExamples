@@ -14,8 +14,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CornerSize
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.DropdownMenuItem
@@ -26,12 +24,8 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -44,26 +38,19 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
-import com.bumptech.glide.util.Executors
 import com.clarkstoro.encryptionexample.R
 import com.clarkstoro.encryptionexample.presentation.CommonViewModel
 import com.clarkstoro.encryptionexample.presentation.common.BoilerplateDefaultButton
 import com.clarkstoro.encryptionexample.presentation.common.copyToClipboard
-import com.clarkstoro.encryptionexample.ui.theme.Dimens
-import com.clarkstoro.encryptionexample.ui.theme.Orange500
-import com.clarkstoro.encryptionexample.ui.theme.Teal200
-import java.util.concurrent.Executor
 import javax.crypto.Cipher
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun FingerprintScreen(viewModel: BiometricScreenViewModel) {
+fun BiometricScreen(viewModel: BiometricScreenViewModel) {
 
     val context = LocalContext.current
 
@@ -100,7 +87,7 @@ fun FingerprintScreen(viewModel: BiometricScreenViewModel) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = stringResource(id = R.string.bottom_nav_page1),
+            text = stringResource(id = R.string.bottom_nav_page3),
             modifier = Modifier,
             fontSize = 24.sp,
             color = MaterialTheme.colorScheme.onSecondary
