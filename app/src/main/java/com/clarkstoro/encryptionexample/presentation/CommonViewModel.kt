@@ -2,10 +2,12 @@ package com.clarkstoro.encryptionexample.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.clarkstoro.domain.repositories.DataStoreManagerRepository
 import com.clarkstoro.encryptionexample.utils.CryptoManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.nio.charset.StandardCharsets
@@ -13,7 +15,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CommonViewModel @Inject constructor(
-    private val cryptoManager: CryptoManager
+    private val cryptoManager: CryptoManager,
+    private val dataStoreManagerRepository: DataStoreManagerRepository
 ) : ViewModel() {
 
     enum class CryptMode {
@@ -22,6 +25,7 @@ class CommonViewModel @Inject constructor(
     }
 
     val cipherTextResultFlow = MutableStateFlow("")
+    val currentEncryptedStoredValueFlow = MutableStateFlow("")
 
     fun encryptTextTest(plainText: String) {
         viewModelScope.launch {
@@ -119,6 +123,31 @@ class CommonViewModel @Inject constructor(
             cipherTextResultFlow.tryEmit(plainTextDecrypted)
         } ?: run {
             cipherTextResultFlow.tryEmit("Error: could not decrypt text")
+        }
+    }
+
+
+    // -------------------------------------------------------------------------
+
+    /**
+     *
+     * Save/Retrieve on datastore
+     *
+     */
+
+    fun saveEncryptedData(encryptedData: String) {
+        viewModelScope.launch {
+            dataStoreManagerRepository.storeEncryptedData(encryptedData)
+        }
+    }
+
+    fun listenEncryptedDataStored() {
+        viewModelScope.launch {
+            dataStoreManagerRepository.getEncryptedData().collectLatest { currentStoredValue ->
+                val storedValue = currentStoredValue ?: "No stored value found"
+                Timber.d("My encrypted data retrieved: $storedValue")
+                currentEncryptedStoredValueFlow.tryEmit(storedValue)
+            }
         }
     }
 }

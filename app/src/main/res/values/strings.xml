@@ -35,4 +35,6 @@
     <string name="pick_mode_hint">Pick an encryption/decryption mode</string>
     <string name="result_encryption_decryption_hint">Result encryption/decryption</string>
 
+    <string name="stored_value_hint">Stored encrypted value on datastore</string>
+    <string name="btn_store_encrypted_value">STORE RESULT DATASTORE</string>
 </resources>
