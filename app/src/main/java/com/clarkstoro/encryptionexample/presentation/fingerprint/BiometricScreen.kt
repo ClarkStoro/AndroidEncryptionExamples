@@ -129,7 +129,6 @@ fun BiometricScreen(viewModel: BiometricScreenViewModel) {
         ReadOnlyInput(value = textResult)
         Spacer(modifier = Modifier.height(10.dp))
 
-        // Button Copy to Clipboard
         CopyToClipboardButton(textResult)
     }
 }

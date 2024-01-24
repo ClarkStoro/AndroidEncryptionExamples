@@ -97,7 +97,6 @@ fun IvModeSelector(
             modesAvailable.forEach { modeAvailable ->
                 DropdownMenuItem(
                     onClick = {
-                        //selectedMode = modeAvailable
                         onModeSelected.invoke(modeAvailable)
                         dropdownExpandedState = false
                     }
