@@ -2,26 +2,12 @@ package com.clarkstoro.encryptionexample.presentation.save_retrieve
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ExposedDropdownMenuBox
-import androidx.compose.material.ExposedDropdownMenuDefaults
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -34,14 +20,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.clarkstoro.encryptionexample.R
 import com.clarkstoro.encryptionexample.presentation.CommonViewModel
+import com.clarkstoro.encryptionexample.presentation.common.ActionButtons
 import com.clarkstoro.encryptionexample.presentation.common.BoilerplateDefaultButton
-import com.clarkstoro.encryptionexample.presentation.common.copyToClipboard
-import com.clarkstoro.encryptionexample.presentation.encrypt_decrypt.InputItem
+import com.clarkstoro.encryptionexample.presentation.common.CopyToClipboardButton
+import com.clarkstoro.encryptionexample.presentation.common.InputEncryptionDecryption
+import com.clarkstoro.encryptionexample.presentation.common.IvModeSelector
+import com.clarkstoro.encryptionexample.presentation.common.ReadOnlyInput
+import com.clarkstoro.encryptionexample.presentation.common.TitleScreen
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -75,140 +63,57 @@ fun SaveRetrieveScreen(viewModel: CommonViewModel) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            text = stringResource(id = R.string.bottom_nav_page2),
-            modifier = Modifier,
-            fontSize = 24.sp,
-            color = MaterialTheme.colorScheme.onSecondary
-        )
+
+        TitleScreen(title = stringResource(id = R.string.bottom_nav_page2))
         Spacer(modifier = Modifier.height(20.dp))
 
-        // Result Current Encrypted Stored Valued
-        InputItem(
-            modifier = Modifier.fillMaxWidth(),
-            value = currentEncryptedStoredValue,
+        ReadOnlyInput(
             label = stringResource(id = R.string.stored_value_hint),
-            isReadOnly = true
-        ) {}
+            value = currentEncryptedStoredValue
+        )
         Spacer(modifier = Modifier.height(10.dp))
 
-        // Button Copy to Clipboard
-        BoilerplateDefaultButton(
-            textId = R.string.btn_copy_to_clipboard
-        ) {
-            copyToClipboard(context, "Stored value Encryption/Decryption", currentEncryptedStoredValue)
-        }
-
+        CopyToClipboardButton(textToCopy = currentEncryptedStoredValue)
         Spacer(modifier = Modifier.height(20.dp))
 
-        // Mode Selector
-        ExposedDropdownMenuBox(
-            modifier = Modifier.fillMaxWidth(),
-            expanded = dropdownExpandedState,
-            onExpandedChange = {dropdownExpandedState = !dropdownExpandedState}
-        ) {
-            androidx.compose.material.OutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
-                keyboardOptions = KeyboardOptions(
-                    imeAction = ImeAction.Done
-                ),
-                keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
-                value = selectedMode?.name.orEmpty(),
-                readOnly = true,
-                onValueChange = { },
-                label = { androidx.compose.material.Text(stringResource(id = R.string.pick_mode_hint)) },
-                trailingIcon = {
-                    ExposedDropdownMenuDefaults.TrailingIcon(
-                        expanded = dropdownExpandedState
-                    )
-                }
-            )
-            ExposedDropdownMenu(
-                expanded = dropdownExpandedState,
-                onDismissRequest = {
-                    dropdownExpandedState = false
-                }
-            ) {
-                modesAvailable.forEach { modeAvailable ->
-                    DropdownMenuItem(
-                        onClick = {
-                            selectedMode = modeAvailable
-                            dropdownExpandedState = false
-                        }
-                    ) {
-                        Text(
-                            text = modeAvailable.name
-                        )
-                    }
-                }
+        IvModeSelector(
+            selectedMode,
+            onModeSelected = {
+                selectedMode = it
             }
-        }
+        )
 
-        // Input Encryption/Decryption
-        InputItem(
-            modifier = Modifier.fillMaxWidth(),
-            value = textToEncryptDecrypt,
-            label = stringResource(id = R.string.encrypt_decrypt_hint),
-            trailingIcon = {
-                when {
-                    textToEncryptDecrypt.isNotBlank() -> {
-                        IconButton(onClick = { textToEncryptDecrypt = "" }) {
-                            Icon(imageVector = Icons.Filled.Clear, contentDescription = stringResource(id = com.google.android.material.R.string.clear_text_end_icon_content_description))
-                        }
-                    }
-                    else -> {}
-                }
+        InputEncryptionDecryption(
+            textToEncryptDecrypt,
+            onValueChange = {
+                textToEncryptDecrypt = it
             }
-        ) {
-            textToEncryptDecrypt = it
-        }
+        )
         Spacer(modifier = Modifier.height(10.dp))
 
-        // Buttons
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
-            BoilerplateDefaultButton(
-                textId = R.string.btn_encrypt
-            ) {
-                when (selectedMode) {
-                    CommonViewModel.CryptMode.APPEND -> {
-                        viewModel.encryptTextAppendingMode(textToEncryptDecrypt)
-                    }
-                    CommonViewModel.CryptMode.BYTE_ARRAY -> {
-                        viewModel.encryptTextArrayMode(textToEncryptDecrypt)
-                    }
-                    else -> {}
-                }
+
+        ActionButtons(
+            selectedMode = selectedMode,
+            onEncryptAppendMode = {
+                viewModel.encryptTextAppendingMode(textToEncryptDecrypt)
+            },
+            onDecryptAppendMode = {
+                viewModel.decryptAppendingMode(textToEncryptDecrypt)
+            },
+            onEncryptByteArrayMode = {
+                viewModel.encryptTextArrayMode(textToEncryptDecrypt)
+            },
+            onDecryptByteArrayMode = {
+                viewModel.decryptArrayMode(textToEncryptDecrypt)
             }
-            Spacer(modifier = Modifier.width(8.dp))
-            BoilerplateDefaultButton(
-                textId = R.string.btn_decrypt
-            ) {
-                when (selectedMode) {
-                    CommonViewModel.CryptMode.APPEND -> {
-                        viewModel.decryptAppendingMode(textToEncryptDecrypt)
-                    }
-                    CommonViewModel.CryptMode.BYTE_ARRAY -> {
-                        viewModel.decryptArrayMode(textToEncryptDecrypt)
-                    }
-                    else -> {}
-                }
-            }
-        }
+        )
         Spacer(modifier = Modifier.height(18.dp))
 
-        // Result Encryption/Decryption
-        InputItem(
-            modifier = Modifier.fillMaxWidth(),
-            value = textResult,
-            label = stringResource(id = R.string.result_encryption_decryption_hint),
-            isReadOnly = true
-        ) {}
+        ReadOnlyInput(
+            value = textResult
+        )
         Spacer(modifier = Modifier.height(10.dp))
 
-        // Button Store Encrypted Value
         BoilerplateDefaultButton(
             textId = R.string.btn_store_encrypted_value
         ) {
