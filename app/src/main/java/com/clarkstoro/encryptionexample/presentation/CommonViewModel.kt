@@ -3,6 +3,8 @@ package com.clarkstoro.encryptionexample.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.clarkstoro.domain.repositories.DataStoreManagerRepository
+import com.clarkstoro.domain.usecases.ListenUpdatesEncryptedDataStoredUseCase
+import com.clarkstoro.domain.usecases.StoreEncryptedDataUseCase
 import com.clarkstoro.encryptionexample.utils.CryptoManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -16,7 +18,8 @@ import javax.inject.Inject
 @HiltViewModel
 class CommonViewModel @Inject constructor(
     private val cryptoManager: CryptoManager,
-    private val dataStoreManagerRepository: DataStoreManagerRepository
+    private val storeEncryptedDataUseCase: StoreEncryptedDataUseCase,
+    private val listenUpdatesEncryptedDataStoredUseCase: ListenUpdatesEncryptedDataStoredUseCase
 ) : ViewModel() {
 
     enum class CryptMode {
@@ -85,13 +88,13 @@ class CommonViewModel @Inject constructor(
 
     fun saveEncryptedData(encryptedData: String) {
         viewModelScope.launch {
-            dataStoreManagerRepository.storeEncryptedData(encryptedData)
+            storeEncryptedDataUseCase(encryptedData)
         }
     }
 
     fun listenEncryptedDataStored() {
         viewModelScope.launch {
-            dataStoreManagerRepository.getEncryptedData().collectLatest { currentStoredValue ->
+            listenUpdatesEncryptedDataStoredUseCase().collectLatest { currentStoredValue ->
                 val storedValue = currentStoredValue ?: "No stored value found"
                 Timber.d("My encrypted data retrieved: $storedValue")
                 currentEncryptedStoredValueFlow.tryEmit(storedValue)
