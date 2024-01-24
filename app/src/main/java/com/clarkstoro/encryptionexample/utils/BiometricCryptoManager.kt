@@ -6,8 +6,6 @@ import android.util.Base64
 import timber.log.Timber
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
-import java.io.InputStream
-import java.io.OutputStream
 import java.nio.charset.StandardCharsets
 import java.security.KeyStore
 import java.security.KeyStore.SecretKeyEntry
@@ -107,6 +105,7 @@ class BiometricCryptoManager {
                 .setBlockModes(CURRENT_BLOCK_MODE)
                 .setEncryptionPaddings(CURRENT_PADDING)
                 .setUserAuthenticationRequired(true)
+                .setInvalidatedByBiometricEnrollment(false)
                 .build()
             )
         }.generateKey()
