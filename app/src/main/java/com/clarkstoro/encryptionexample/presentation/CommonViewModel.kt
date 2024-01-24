@@ -27,58 +27,6 @@ class CommonViewModel @Inject constructor(
     val cipherTextResultFlow = MutableStateFlow("")
     val currentEncryptedStoredValueFlow = MutableStateFlow("")
 
-    fun encryptTextTest(plainText: String) {
-        viewModelScope.launch {
-            delay(1000)
-
-
-            // SILLY SEPARATOR IMPL - OK
-            /*
-            val cipherText = cryptoManager.encryptString(plainText)
-            Timber.d("MIO TEST - cipherText: $cipherText")
-
-            val plainTextDecrypted = cryptoManager.decryptString(cipherText)
-            Timber.d("MIO TEST - plain text decrypted: $plainTextDecrypted")
-
-             */
-
-            // BYTE ARRAY IMPL - OK
-            /*cryptoManager.encryptToStringByteArrayMode(plainText.toByteArray())?.let { cipherText ->
-                Timber.d("MIO TEST - cipherText: $cipherText")
-
-                cryptoManager.decryptFromStringByteArrayMode(cipherText)?.let { plainTextDecryptedBytes ->
-                    val plainTextDecrypted = String(plainTextDecryptedBytes, StandardCharsets.UTF_8)
-                    Timber.d("MIO TEST - plain text decrypted: $plainTextDecrypted")
-                }
-            }*/
-
-
-
-            // Valori di pixel dell'immagine
-            /*val pixelValues = intArrayOf(1, 2, 3, 4)
-
-            // Converte i valori di pixel in un array di byte
-            val byteArray = ByteArray(pixelValues.size) { pixelValues[it].toByte() }
-
-            // Stampa l'array di byte
-            println("Array di byte: ${byteArray.joinToString(", ")}")
-
-
-            val outputStream = ByteArrayOutputStream()
-            val cipherBytes = cryptoManager.encrypt(byteArray, outputStream)
-            Timber.d("MIO TEST - cypher: $cipherBytes")
-
-
-            val inputStream =  ByteArrayInputStream(outputStream.toByteArray())
-            val plainImage = cryptoManager.decrypt(inputStream)
-
-            Timber.d("MIO TEST - plain image: ${plainImage.joinToString(", ")}")
-*/
-
-
-        }
-    }
-
     /**
      * MODE = String append
      */
