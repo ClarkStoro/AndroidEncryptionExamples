@@ -4,6 +4,9 @@ import android.content.Context
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
 import androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL
+import androidx.biometric.BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED
+import androidx.biometric.BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE
+import androidx.biometric.BiometricManager.BIOMETRIC_SUCCESS
 import androidx.biometric.BiometricPrompt
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,6 +14,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -22,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import com.clarkstoro.encryptionexample.R
@@ -38,6 +43,7 @@ import javax.crypto.Cipher
 fun BiometricScreen(viewModel: BiometricScreenViewModel) {
 
     val context = LocalContext.current
+    val biometricManager = remember { BiometricManager.from(context) }
 
     val textResult = viewModel.cipherTextResultFlow.collectAsState().value
 
@@ -52,14 +58,6 @@ fun BiometricScreen(viewModel: BiometricScreenViewModel) {
     }
 
 
-    // ---------------------------------------------------------------------------------------
-
-    val biometricManager = remember { BiometricManager.from(context) }
-
-    // ------------------------------------------------------------
-
-
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -71,65 +69,96 @@ fun BiometricScreen(viewModel: BiometricScreenViewModel) {
         TitleScreen(title = stringResource(id = R.string.bottom_nav_page3))
         Spacer(modifier = Modifier.height(20.dp))
 
-        IvModeSelector(selectedMode, onModeSelected = {
-            selectedMode = it
-        })
+        when (biometricManager.canAuthenticate(BIOMETRIC_STRONG or DEVICE_CREDENTIAL)) {
+            BIOMETRIC_SUCCESS -> {
+                IvModeSelector(selectedMode, onModeSelected = {
+                    selectedMode = it
+                })
 
-        InputEncryptionDecryption(
-            textToEncryptDecrypt = textToEncryptDecrypt,
-            onValueChange = { textToEncryptDecrypt = it }
-        )
-        Spacer(modifier = Modifier.height(10.dp))
+                InputEncryptionDecryption(
+                    textToEncryptDecrypt = textToEncryptDecrypt,
+                    onValueChange = { textToEncryptDecrypt = it }
+                )
+                Spacer(modifier = Modifier.height(10.dp))
 
-        ActionButtons(
-            selectedMode = selectedMode,
-            onEncryptAppendMode = {
-                val encryptCipher = viewModel.biometricCryptoManager.getEncryptCipher()
-                showEncryptBiometricPrompt(
-                    context,
-                    encryptCipher
-                ) {
-                    viewModel.encryptAuthAppendMode(textToEncryptDecrypt, encryptCipher)
-                }
-            },
-            onDecryptAppendMode = {
-                val decryptCipher = viewModel.biometricCryptoManager.getDecryptCipherFromStringAppendMode(textToEncryptDecrypt)
-                decryptCipher?.let {
-                    showEncryptBiometricPrompt(
-                        context,
-                        decryptCipher
-                    ) {
-                        viewModel.decryptAuthAppendMode(textToEncryptDecrypt, decryptCipher)
+                ActionButtons(
+                    selectedMode = selectedMode,
+                    onEncryptAppendMode = {
+                        val encryptCipher = viewModel.biometricCryptoManager.getEncryptCipher()
+                        showEncryptBiometricPrompt(
+                            context,
+                            encryptCipher
+                        ) {
+                            viewModel.encryptAuthAppendMode(textToEncryptDecrypt, encryptCipher)
+                        }
+                    },
+                    onDecryptAppendMode = {
+                        val decryptCipher = viewModel.biometricCryptoManager.getDecryptCipherFromStringAppendMode(textToEncryptDecrypt)
+                        decryptCipher?.let {
+                            showEncryptBiometricPrompt(
+                                context,
+                                decryptCipher
+                            ) {
+                                viewModel.decryptAuthAppendMode(textToEncryptDecrypt, decryptCipher)
+                            }
+                        }
+                    },
+                    onEncryptByteArrayMode = {
+                        val encryptCipher = viewModel.biometricCryptoManager.getEncryptCipher()
+                        showEncryptBiometricPrompt(
+                            context,
+                            encryptCipher
+                        ) {
+                            viewModel.encryptAuthArrayMode(textToEncryptDecrypt, encryptCipher)
+                        }
+                    },
+                    onDecryptByteArrayMode = {
+                        val decryptCipher = viewModel.biometricCryptoManager.getDecryptCipherFromStringByteArrayMode(textToEncryptDecrypt)
+                        decryptCipher?.let {
+                            showEncryptBiometricPrompt(
+                                context,
+                                decryptCipher
+                            ) {
+                                viewModel.decryptAuthArrayMode(textToEncryptDecrypt, decryptCipher)
+                            }
+                        }
                     }
-                }
-            },
-            onEncryptByteArrayMode = {
-                val encryptCipher = viewModel.biometricCryptoManager.getEncryptCipher()
-                showEncryptBiometricPrompt(
-                    context,
-                    encryptCipher
-                ) {
-                    viewModel.encryptAuthArrayMode(textToEncryptDecrypt, encryptCipher)
-                }
-            },
-            onDecryptByteArrayMode = {
-                val decryptCipher = viewModel.biometricCryptoManager.getDecryptCipherFromStringByteArrayMode(textToEncryptDecrypt)
-                decryptCipher?.let {
-                    showEncryptBiometricPrompt(
-                        context,
-                        decryptCipher
-                    ) {
-                        viewModel.decryptAuthArrayMode(textToEncryptDecrypt, decryptCipher)
-                    }
-                }
+                )
+                Spacer(modifier = Modifier.height(18.dp))
+
+                ReadOnlyInput(value = textResult)
+                Spacer(modifier = Modifier.height(10.dp))
+
+                CopyToClipboardButton(textResult)
             }
+
+
+            BIOMETRIC_ERROR_NONE_ENROLLED -> {
+                ErrorLayout(label = "The user can't authenticate because no biometric or device credential is enrolled.")
+            }
+
+            BIOMETRIC_ERROR_NO_HARDWARE -> {
+                ErrorLayout(label = "The user can't authenticate because there is no suitable hardware (e.g. no biometric sensor or no keyguard).")
+            }
+
+            else -> {
+                ErrorLayout("Biometric not available")
+            }
+        }
+    }
+}
+
+@Composable
+private fun ErrorLayout(label: String) {
+    Column(
+        modifier = Modifier.padding(48.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = label,
+            fontSize = 16.sp
         )
-        Spacer(modifier = Modifier.height(18.dp))
-
-        ReadOnlyInput(value = textResult)
-        Spacer(modifier = Modifier.height(10.dp))
-
-        CopyToClipboardButton(textResult)
     }
 }
 
