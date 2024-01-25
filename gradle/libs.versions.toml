@@ -37,6 +37,8 @@ navigationComposeVersion = "2.7.3"
 splashScreenVersion = "1.0.1"
 systemUiControllerVersion = "0.27.0"
 timberVersion = "5.0.1"
+securityCryptoVersion = "1.0.0"
+biometricVersion = "1.2.0-alpha05"
 
 # Data module versions
 gsonVersion = "2.10"
@@ -49,6 +51,7 @@ roomVersion = "2.6.0-rc01"
 
 [libraries]
 # Common module libraries
+biometric = { module = "androidx.biometric:biometric", version.ref = "biometricVersion" }
 coroutinesAndroid = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutinesVersion" }
 coroutinesCore = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutinesVersion" }
 hilt = { module = "com.google.dagger:hilt-android", version.ref = "hiltVersion" }
@@ -75,6 +78,7 @@ locationDependency = { module = "com.google.android.gms:play-services-location",
 material3Compose = { module = "androidx.compose.material3:material3", version.ref = "material3ComposeVersion" }
 navigationDependency = { module = "androidx.navigation:navigation-compose", version.ref = "navigationComposeVersion" }
 permissionsComposeDependency = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistVersion" }
+security-crypto = { module = "androidx.security:security-crypto", version.ref = "securityCryptoVersion" }
 splashScreenDependency = { module = "androidx.core:core-splashscreen", version.ref = "splashScreenVersion" }
 systemUiController = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "systemUiControllerVersion" }
 timberDependency = { module = "com.jakewharton.timber:timber", version.ref = "timberVersion" }

@@ -87,6 +87,6 @@ dependencies {
     // Compose System UI Controller (for system bars colors)
     implementation(libs.systemUiController)
 
-    implementation("androidx.security:security-crypto:1.0.0")
-    implementation("androidx.biometric:biometric:1.2.0-alpha05")
+    implementation(libs.security.crypto)
+    implementation(libs.biometric)
 }
