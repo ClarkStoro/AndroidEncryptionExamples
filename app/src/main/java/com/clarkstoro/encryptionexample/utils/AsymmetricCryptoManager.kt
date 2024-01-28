@@ -31,6 +31,13 @@ class AsymmetricCryptoManager {
         private const val MD_NAME = "SHA-256"
         private const val MGF_NAME = "MGF1"
 
+        private val OAEPP_SPEC = OAEPParameterSpec(
+            MD_NAME,
+            MGF_NAME,
+            MGF1ParameterSpec.SHA1,
+            PSource.PSpecified.DEFAULT
+        )
+
 
         private const val TRANSFORMATION = "$ALGORITHM/$CURRENT_BLOCK_MODE/$CURRENT_PADDING"
 
@@ -48,12 +55,7 @@ class AsymmetricCryptoManager {
             init(
                 Cipher.ENCRYPT_MODE,
                 publicKey,
-                OAEPParameterSpec(
-                    MD_NAME,
-                    MGF_NAME,
-                    MGF1ParameterSpec.SHA1,
-                    PSource.PSpecified.DEFAULT
-                )
+                OAEPP_SPEC
             )
         }
     }
@@ -63,11 +65,7 @@ class AsymmetricCryptoManager {
             init(
                 Cipher.DECRYPT_MODE,
                 getAsymmetricKeyPair().private,
-                OAEPParameterSpec(
-                    MD_NAME,
-                    MGF_NAME,
-                    MGF1ParameterSpec.SHA1,
-                    PSource.PSpecified.DEFAULT)
+                OAEPP_SPEC
             )
         }
     }
