@@ -1,44 +1,39 @@
-# mobile-boilerplate-android-compose
+# Android Kotlin Encryption and Decryption Example
 
-This project is a starting point for any native Android application by Bitrock using Jetpack Compose.
+This project is an Android application built to demonstrate encryption and decryption examples using AndroidKeyStore in Kotlin. The project utilizes Compose for UI, MVVM architecture, and Hilt for dependency injection.
 
 ## Features
 
-This project starts with a login screen containing:
-- e-mail and password inputs
-- password reset button (password reset yet to be implemented)
-- login and signup buttons
+The application consists of a bottom bar with four tabs:
 
-From the signup button, the user can navigate to a signup screen containing:
-- add/edit photo field [^note]
-- e-mail and password inputs
-- signup button (signup yet to be implemented)
+1. **AES Encryption/Decryption**: Allows users to choose between AES/CBC/PKCS7 or AES/GCM/NOPADDING encryption methods. Users can also choose how to save the Initialization Vector (IV) of encryption: Append Mode or Byte Array Mode (utilizes CryptoManager class).
 
-Once logged in, the user lands to the main screen. It has a bottom navigation bar with three
-options, representing three example screens:
-- a search screen
-- a home screen (which at the moment has a RecyclerView with example data)
-- a settings screen (with a button to navigate to a further Detail screen)
+2. **AES Encryption/Decryption with DataStore**: Similar to the first tab but with the option to save the final result in Android DataStore (utilizes CryptoManager class).
 
-## Libraries
+3. **AES Encryption/Decryption with Biometrics**: Similar to the first tab but with the addition of biometric authentication during key configuration (utilizes BiometricCryptoManager class).
 
-For this project the following libraries are used:
+4. **RSA Encryption/Decryption with OAEPP**: Allows users to perform encryption/decryption using RSA and Optimal Asymmetric Encryption Padding (OAEPP). Users can choose which public key to use for encryption based on a provided Public Key in string format (utilizes AsymmetricCryptoManager class).
 
-- [Jetpack Navigation](https://developer.android.com/guide/navigation) to handle navigation between different Fragments
-- [Hilt](https://developer.android.com/training/dependency-injection/hilt-android)
-  to handle the Dependency Injection within the application
-- [Timber](https://github.com/JakeWharton/timber) as a logger
-- [Retrofit](https://square.github.io/retrofit/) as an abstraction of an HTTP client based on annotations [^note2]
-- [OkHttp](https://square.github.io/okhttp/) as an HTTP client to perform HTTP requests and get responses
-- [Room](https://developer.android.com/training/data-storage/room) for local database management
-- [Preferences DataStore](https://developer.android.com/topic/libraries/architecture/datastore)
-  to store simple data in key-value pairs (such as the user's e-mail and password in this example)
-- [Landscapist-Glide](https://github.com/skydoves/landscapist) to allow network pictures loading
-- [SplashScreen](https://developer.android.com/develop/ui/views/launch/splash-screen) to implement a SplashScreen
-- [FusedLocationProvider](https://developers.google.com/android/guides/setup) to get and track the user's location (also on background)
-- [Accompanist Permissions](https://google.github.io/accompanist/permissions/) to handle the request of location permissions
-- [Compose Material 3](https://developer.android.com/jetpack/compose/designsystems/material3) for migration from Material Design 2 to Material Design 3
-- [Compose Material](https://developer.android.com/jetpack/androidx/releases/compose-material) still being kept for the BottomSheetLayout
+## Class Separation
 
-[^note] The photo picker implementation used in this project is [this one](https://developer.android.com/training/data-storage/shared/photopicker).
-[^note2] The base URL required has to be inserted inside the build.gradle file of the data module.
+The classes used to handle encryption and decryption are intentionally separated based on their purpose to make the example easier to understand.
+
+## Installation
+
+Clone the repository and open the project in Android Studio. Build and run the application on an Android device or emulator.
+
+## Contributing
+
+Feel free to contribute to this project by forking the repository, making your changes, and creating a pull request.
+
+## License
+
+This project is licensed under the [MIT License](https://github.com/clarkstoro/encryptionexample/blob/main/LICENSE).
+
+## Presentation Slides
+
+Slides related to this project will be available on GitHub at [Presentation Slides](https://github.com/clarkstoro/android-cryptography-talk).
+
+## Contact
+
+For any questions or feedback, please contact [Emanuele Maso](https://github.com/clarkstoro).
