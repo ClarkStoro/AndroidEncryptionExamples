@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -35,7 +36,7 @@ import com.clarkstoro.encryptionexample.presentation.common.ActionButtons
 import com.clarkstoro.encryptionexample.presentation.common.CopyToClipboardButton
 import com.clarkstoro.encryptionexample.presentation.common.InputEncryptionDecryption
 import com.clarkstoro.encryptionexample.presentation.common.IvModeSelector
-import com.clarkstoro.encryptionexample.presentation.common.ReadOnlyInput
+import com.clarkstoro.encryptionexample.presentation.common.ResultInput
 import com.clarkstoro.encryptionexample.presentation.common.TitleScreen
 import javax.crypto.Cipher
 
@@ -58,7 +59,7 @@ fun BiometricScreen(viewModel: BiometricScreenViewModel) {
     }
 
 
-    Column(
+    LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .padding(24.dp),
@@ -66,83 +67,98 @@ fun BiometricScreen(viewModel: BiometricScreenViewModel) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        TitleScreen(title = stringResource(id = R.string.bottom_nav_page3))
-        Spacer(modifier = Modifier.height(20.dp))
+        item {
 
-        when (biometricManager.canAuthenticate(BIOMETRIC_STRONG or DEVICE_CREDENTIAL)) {
-            BIOMETRIC_SUCCESS -> {
-                IvModeSelector(selectedMode, onModeSelected = {
-                    selectedMode = it
-                })
+            TitleScreen(title = stringResource(id = R.string.bottom_nav_page3))
+            Spacer(modifier = Modifier.height(20.dp))
 
-                InputEncryptionDecryption(
-                    textToEncryptDecrypt = textToEncryptDecrypt,
-                    onValueChange = { textToEncryptDecrypt = it }
-                )
-                Spacer(modifier = Modifier.height(10.dp))
+            when (biometricManager.canAuthenticate(BIOMETRIC_STRONG or DEVICE_CREDENTIAL)) {
+                BIOMETRIC_SUCCESS -> {
+                    IvModeSelector(selectedMode, onModeSelected = {
+                        selectedMode = it
+                    })
 
-                ActionButtons(
-                    selectedMode = selectedMode,
-                    onEncryptAppendMode = {
-                        val encryptCipher = viewModel.biometricCryptoManager.getEncryptCipher()
-                        showEncryptBiometricPrompt(
-                            context,
-                            encryptCipher
-                        ) {
-                            viewModel.encryptAuthAppendMode(textToEncryptDecrypt, encryptCipher)
-                        }
-                    },
-                    onDecryptAppendMode = {
-                        val decryptCipher = viewModel.biometricCryptoManager.getDecryptCipherFromStringAppendMode(textToEncryptDecrypt)
-                        decryptCipher?.let {
+                    InputEncryptionDecryption(
+                        textToEncryptDecrypt = textToEncryptDecrypt,
+                        onValueChange = { textToEncryptDecrypt = it }
+                    )
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    ActionButtons(
+                        selectedMode = selectedMode,
+                        onEncryptAppendMode = {
+                            val encryptCipher = viewModel.biometricCryptoManager.getEncryptCipher()
                             showEncryptBiometricPrompt(
                                 context,
-                                decryptCipher
+                                encryptCipher
                             ) {
-                                viewModel.decryptAuthAppendMode(textToEncryptDecrypt, decryptCipher)
+                                viewModel.encryptAuthAppendMode(textToEncryptDecrypt, encryptCipher)
                             }
-                        }
-                    },
-                    onEncryptByteArrayMode = {
-                        val encryptCipher = viewModel.biometricCryptoManager.getEncryptCipher()
-                        showEncryptBiometricPrompt(
-                            context,
-                            encryptCipher
-                        ) {
-                            viewModel.encryptAuthArrayMode(textToEncryptDecrypt, encryptCipher)
-                        }
-                    },
-                    onDecryptByteArrayMode = {
-                        val decryptCipher = viewModel.biometricCryptoManager.getDecryptCipherFromStringByteArrayMode(textToEncryptDecrypt)
-                        decryptCipher?.let {
+                        },
+                        onDecryptAppendMode = {
+                            val decryptCipher =
+                                viewModel.biometricCryptoManager.getDecryptCipherFromStringAppendMode(
+                                    textToEncryptDecrypt
+                                )
+                            decryptCipher?.let {
+                                showEncryptBiometricPrompt(
+                                    context,
+                                    decryptCipher
+                                ) {
+                                    viewModel.decryptAuthAppendMode(
+                                        textToEncryptDecrypt,
+                                        decryptCipher
+                                    )
+                                }
+                            }
+                        },
+                        onEncryptByteArrayMode = {
+                            val encryptCipher = viewModel.biometricCryptoManager.getEncryptCipher()
                             showEncryptBiometricPrompt(
                                 context,
-                                decryptCipher
+                                encryptCipher
                             ) {
-                                viewModel.decryptAuthArrayMode(textToEncryptDecrypt, decryptCipher)
+                                viewModel.encryptAuthArrayMode(textToEncryptDecrypt, encryptCipher)
+                            }
+                        },
+                        onDecryptByteArrayMode = {
+                            val decryptCipher =
+                                viewModel.biometricCryptoManager.getDecryptCipherFromStringByteArrayMode(
+                                    textToEncryptDecrypt
+                                )
+                            decryptCipher?.let {
+                                showEncryptBiometricPrompt(
+                                    context,
+                                    decryptCipher
+                                ) {
+                                    viewModel.decryptAuthArrayMode(
+                                        textToEncryptDecrypt,
+                                        decryptCipher
+                                    )
+                                }
                             }
                         }
-                    }
-                )
-                Spacer(modifier = Modifier.height(18.dp))
+                    )
+                    Spacer(modifier = Modifier.height(18.dp))
 
-                ReadOnlyInput(value = textResult)
-                Spacer(modifier = Modifier.height(10.dp))
+                    ResultInput(value = textResult)
+                    Spacer(modifier = Modifier.height(10.dp))
 
-                CopyToClipboardButton(textResult)
-            }
+                    CopyToClipboardButton(textResult)
+                }
 
 
-            BIOMETRIC_ERROR_NONE_ENROLLED -> {
-                ErrorLayout(label = "The user can't authenticate because no biometric or device credential is enrolled.")
-            }
+                BIOMETRIC_ERROR_NONE_ENROLLED -> {
+                    ErrorLayout(label = "The user can't authenticate because no biometric or device credential is enrolled.")
+                }
 
-            BIOMETRIC_ERROR_NO_HARDWARE -> {
-                ErrorLayout(label = "The user can't authenticate because there is no suitable hardware (e.g. no biometric sensor or no keyguard).")
-            }
+                BIOMETRIC_ERROR_NO_HARDWARE -> {
+                    ErrorLayout(label = "The user can't authenticate because there is no suitable hardware (e.g. no biometric sensor or no keyguard).")
+                }
 
-            else -> {
-                ErrorLayout("Biometric not available")
+                else -> {
+                    ErrorLayout("Biometric not available")
+                }
             }
         }
     }

@@ -1,11 +1,11 @@
 package com.clarkstoro.encryptionexample.presentation.encrypt_decrypt
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -22,7 +22,7 @@ import com.clarkstoro.encryptionexample.presentation.common.ActionButtons
 import com.clarkstoro.encryptionexample.presentation.common.CopyToClipboardButton
 import com.clarkstoro.encryptionexample.presentation.common.InputEncryptionDecryption
 import com.clarkstoro.encryptionexample.presentation.common.IvModeSelector
-import com.clarkstoro.encryptionexample.presentation.common.ReadOnlyInput
+import com.clarkstoro.encryptionexample.presentation.common.ResultInput
 import com.clarkstoro.encryptionexample.presentation.common.TitleScreen
 
 @Composable
@@ -39,47 +39,49 @@ fun EncryptDecryptScreen(viewModel: CommonViewModel) {
         mutableStateOf("")
     }
 
-    Column(
+    LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .padding(24.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        TitleScreen(title = stringResource(id = R.string.bottom_nav_page1))
-        Spacer(modifier = Modifier.height(20.dp))
+        item {
+            TitleScreen(title = stringResource(id = R.string.bottom_nav_page1))
+            Spacer(modifier = Modifier.height(20.dp))
 
-        IvModeSelector(selectedMode, onModeSelected = {
-            selectedMode = it
-        })
+            IvModeSelector(selectedMode, onModeSelected = {
+                selectedMode = it
+            })
 
-        InputEncryptionDecryption(
-            textToEncryptDecrypt = textToEncryptDecrypt,
-            onValueChange = { textToEncryptDecrypt = it },
-        )
-        Spacer(modifier = Modifier.height(10.dp))
+            InputEncryptionDecryption(
+                textToEncryptDecrypt = textToEncryptDecrypt,
+                onValueChange = { textToEncryptDecrypt = it },
+            )
+            Spacer(modifier = Modifier.height(10.dp))
 
-        ActionButtons(
-            selectedMode = selectedMode,
-            onEncryptAppendMode = {
-                viewModel.encryptTextAppendingMode(textToEncryptDecrypt)
-            },
-            onDecryptAppendMode = {
-                viewModel.decryptAppendingMode(textToEncryptDecrypt)
-            },
-            onEncryptByteArrayMode = {
-                viewModel.encryptTextArrayMode(textToEncryptDecrypt)
-            },
-            onDecryptByteArrayMode = {
-                viewModel.decryptArrayMode(textToEncryptDecrypt)
-            }
-        )
-        Spacer(modifier = Modifier.height(18.dp))
+            ActionButtons(
+                selectedMode = selectedMode,
+                onEncryptAppendMode = {
+                    viewModel.encryptTextAppendingMode(textToEncryptDecrypt)
+                },
+                onDecryptAppendMode = {
+                    viewModel.decryptAppendingMode(textToEncryptDecrypt)
+                },
+                onEncryptByteArrayMode = {
+                    viewModel.encryptTextArrayMode(textToEncryptDecrypt)
+                },
+                onDecryptByteArrayMode = {
+                    viewModel.decryptArrayMode(textToEncryptDecrypt)
+                }
+            )
+            Spacer(modifier = Modifier.height(18.dp))
 
-        ReadOnlyInput(value = textResult)
-        Spacer(modifier = Modifier.height(10.dp))
+            ResultInput(value = textResult)
+            Spacer(modifier = Modifier.height(10.dp))
 
-        CopyToClipboardButton(textResult)
+            CopyToClipboardButton(textResult)
+        }
     }
 }
 

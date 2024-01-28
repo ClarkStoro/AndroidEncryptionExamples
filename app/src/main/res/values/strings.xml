@@ -17,4 +17,7 @@
 
     <string name="stored_value_hint">Stored encrypted value on datastore</string>
     <string name="btn_store_encrypted_value">STORE RESULT DATASTORE</string>
+
+    <string name="personal_public_key_hint">Personal Public Key</string>
+    <string name="public_key_to_encrypt">Public Key for Input Encryption</string>
 </resources>

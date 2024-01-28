@@ -116,22 +116,10 @@ fun InputEncryptionDecryption(
     textToEncryptDecrypt: String,
     onValueChange: (String) -> Unit
 ) {
-    InputItem(
-        modifier = Modifier.fillMaxWidth(),
-        value = textToEncryptDecrypt,
+    CommonInputText(
+        isReadOnly = false,
         label = stringResource(id = R.string.encrypt_decrypt_hint),
-        trailingIcon = {
-            when {
-                textToEncryptDecrypt.isNotBlank() -> {
-                    IconButton(
-                        onClick = { onValueChange("") }
-                    ) {
-                        Icon(imageVector = Icons.Filled.Clear, contentDescription = stringResource(id = com.google.android.material.R.string.clear_text_end_icon_content_description))
-                    }
-                }
-                else -> {}
-            }
-        },
+        value = textToEncryptDecrypt,
         onValueChange = onValueChange
     )
 }
@@ -203,16 +191,14 @@ fun ActionButtons(
 }
 
 @Composable
-fun ReadOnlyInput(
-    label: String = stringResource(id = R.string.result_encryption_decryption_hint),
+fun ResultInput(
     value: String
 ) {
-    InputItem(
-        modifier = Modifier.fillMaxWidth(),
-        value = value,
-        label = label,
-        isReadOnly = true
-    ) {}
+    CommonInputText(
+        isReadOnly = true,
+        label = stringResource(id = R.string.result_encryption_decryption_hint),
+        value = value
+    )
 }
 
 @Composable
@@ -228,27 +214,37 @@ fun CopyToClipboardButton(textToCopy: String) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun InputItem(
-    modifier: Modifier,
+fun CommonInputText(
     value: String,
     label: String,
     isReadOnly: Boolean = false,
-    visualTransformation: VisualTransformation = VisualTransformation.None,
-    trailingIcon: @Composable (() -> Unit)? = null,
-    onValueChange: (String) -> Unit
+    onValueChange: ((String) -> Unit)? = null
 ) {
     val focusManager = LocalFocusManager.current
 
     androidx.compose.material3.OutlinedTextField(
         value = value,
         label = { Text(text = label) },
-        onValueChange = onValueChange,
+        onValueChange = {
+            onValueChange?.invoke(it)
+        },
         keyboardOptions = KeyboardOptions(
             imeAction = ImeAction.Done
         ),
         keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
-        visualTransformation = visualTransformation,
-        trailingIcon = trailingIcon,
+        visualTransformation = VisualTransformation.None,
+        trailingIcon = {
+            when {
+                !isReadOnly && value.isNotBlank() -> {
+                    IconButton(
+                        onClick = { onValueChange?.invoke("") }
+                    ) {
+                        Icon(imageVector = Icons.Filled.Clear, contentDescription = stringResource(id = com.google.android.material.R.string.clear_text_end_icon_content_description))
+                    }
+                }
+                else -> {}
+            }
+        },
         singleLine = false,
         readOnly = isReadOnly,
         shape = RoundedCornerShape(CornerSize(Dimens.size4)),
@@ -258,7 +254,7 @@ fun InputItem(
             unfocusedIndicatorColor = Teal200,
             textColor = MaterialTheme.colorScheme.onSecondary
         ),
-        modifier = modifier
+        modifier = Modifier.fillMaxWidth()
     )
 }
 
