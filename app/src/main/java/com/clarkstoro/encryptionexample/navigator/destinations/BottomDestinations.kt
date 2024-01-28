@@ -42,3 +42,16 @@ data object BiometricScreen: NavGraphDestinations(
     override val deselectedIconResId: Int
         get() = R.drawable.ic_biometric
 }
+
+data object AsymmetricEncryptDecryptScreen: NavGraphDestinations(
+    route = NavGraphDestinationKeys.ASYMMETRIC_ENCRYPT_DECRYPT.name,
+    arguments = emptyList()
+), BottomNavItem {
+    // Bottom navigation
+    override val titleResId: Int
+        get() = R.string.bottom_nav_page4
+    override val selectedIconResId: Int
+        get() = R.drawable.ic_biometric
+    override val deselectedIconResId: Int
+        get() = R.drawable.ic_biometric
+}

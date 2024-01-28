@@ -5,6 +5,7 @@ import android.content.Context
 import com.clarkstoro.encryptionexample.navigator.Navigator
 import com.clarkstoro.encryptionexample.providers.resource_provider.ResourceProvider
 import com.clarkstoro.encryptionexample.providers.resource_provider.ResourceProviderImpl
+import com.clarkstoro.encryptionexample.utils.AsymmetricCryptoManager
 import com.clarkstoro.encryptionexample.utils.BiometricCryptoManager
 import com.clarkstoro.encryptionexample.utils.CryptoManager
 import dagger.Module
@@ -40,4 +41,8 @@ internal object AppModule {
     @Singleton
     @Provides
     fun provideBiometricCryptoManager(): BiometricCryptoManager = BiometricCryptoManager()
+
+    @Singleton
+    @Provides
+    fun provideAsymmetricCryptoManager(): AsymmetricCryptoManager = AsymmetricCryptoManager()
 }

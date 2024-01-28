@@ -5,6 +5,7 @@
     <string name="bottom_nav_page1">Encrypt/Decrypt</string>
     <string name="bottom_nav_page2">Save/Retrieve</string>
     <string name="bottom_nav_page3">Biometric</string>
+    <string name="bottom_nav_page4">Asymmetric Encrypt/Decrypt</string>
 
     <!-- Common -->
     <string name="btn_encrypt">ENCRYPT</string>

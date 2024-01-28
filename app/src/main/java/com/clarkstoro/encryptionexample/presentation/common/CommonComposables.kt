@@ -180,6 +180,29 @@ fun ActionButtons(
 }
 
 @Composable
+fun ActionButtons(
+    onEncrypt: () -> Unit,
+    onDecrypt: () -> Unit,
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
+    ) {
+        BoilerplateDefaultButton(
+            textId = R.string.btn_encrypt
+        ) {
+            onEncrypt()
+        }
+        Spacer(modifier = Modifier.width(8.dp))
+        BoilerplateDefaultButton(
+            textId = R.string.btn_decrypt
+        ) {
+            onDecrypt()
+        }
+    }
+}
+
+@Composable
 fun ReadOnlyInput(
     label: String = stringResource(id = R.string.result_encryption_decryption_hint),
     value: String

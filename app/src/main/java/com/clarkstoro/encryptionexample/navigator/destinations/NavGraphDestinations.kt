@@ -8,7 +8,8 @@ import androidx.navigation.NavOptions
 enum class NavGraphDestinationKeys {
     ENCRYPT_DECRYPT,
     SAVE_RETRIEVE,
-    BIOMETRIC
+    BIOMETRIC,
+    ASYMMETRIC_ENCRYPT_DECRYPT
 }
 
 const val MAIN_NAVIGATION_ROUTE_KEY = "main_nav_route_key"
@@ -19,7 +20,8 @@ sealed class NavGraphDestinations(open val route: String, open val arguments: Li
         val BOTTOM_NAV_DESTINATIONS = listOf<NavGraphDestinations>(
             EncryptDecryptScreen,
             SaveRetrieveScreen,
-            BiometricScreen
+            BiometricScreen,
+            AsymmetricEncryptDecryptScreen
         )
     }
 

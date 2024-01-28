@@ -10,11 +10,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import com.clarkstoro.encryptionexample.navigator.Navigator
 import com.clarkstoro.encryptionexample.navigator.Navigator.Companion.NAVIGATOR_KEY
+import com.clarkstoro.encryptionexample.navigator.destinations.AsymmetricEncryptDecryptScreen
 import com.clarkstoro.encryptionexample.navigator.destinations.BiometricScreen
 import com.clarkstoro.encryptionexample.navigator.destinations.EncryptDecryptScreen
 import com.clarkstoro.encryptionexample.navigator.destinations.MAIN_NAVIGATION_ROUTE_KEY
 import com.clarkstoro.encryptionexample.navigator.destinations.NavDestinationArgs
 import com.clarkstoro.encryptionexample.navigator.destinations.SaveRetrieveScreen
+import com.clarkstoro.encryptionexample.presentation.asymmetric_encrypt_decrypt.AsymmetricEncryptDecryptScreen
 import com.clarkstoro.encryptionexample.presentation.encrypt_decrypt.EncryptDecryptScreen
 import com.clarkstoro.encryptionexample.presentation.fingerprint.BiometricScreen
 import com.clarkstoro.encryptionexample.presentation.save_retrieve.SaveRetrieveScreen
@@ -66,6 +68,10 @@ fun EncryptionExampleNavGraph(
 
             composable(BiometricScreen.route) {
                 BiometricScreen(hiltViewModel())
+            }
+
+            composable(AsymmetricEncryptDecryptScreen.route) {
+                AsymmetricEncryptDecryptScreen(hiltViewModel())
             }
         }
     }
