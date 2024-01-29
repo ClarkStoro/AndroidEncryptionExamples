@@ -22,7 +22,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.clarkstoro.androidencryptionexamples.R
 import com.clarkstoro.androidencryptionexamples.presentation.CommonViewModel
 import com.clarkstoro.androidencryptionexamples.presentation.common.ActionButtons
-import com.clarkstoro.androidencryptionexamples.presentation.common.BoilerplateDefaultButton
+import com.clarkstoro.androidencryptionexamples.presentation.common.AppDefaultButton
 import com.clarkstoro.androidencryptionexamples.presentation.common.CommonInputText
 import com.clarkstoro.androidencryptionexamples.presentation.common.CopyToClipboardButton
 import com.clarkstoro.androidencryptionexamples.presentation.common.InputEncryptionDecryption
@@ -113,7 +113,7 @@ fun SaveRetrieveScreen(viewModel: CommonViewModel) {
             )
             Spacer(modifier = Modifier.height(10.dp))
 
-            BoilerplateDefaultButton(
+            AppDefaultButton(
                 textId = R.string.btn_store_encrypted_value
             ) {
                 viewModel.saveEncryptedData(textResult)

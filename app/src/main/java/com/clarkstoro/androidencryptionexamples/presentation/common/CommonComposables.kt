@@ -134,7 +134,7 @@ fun ActionButtons(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
-        BoilerplateDefaultButton(
+        AppDefaultButton(
             textId = R.string.btn_encrypt
         ) {
             when (selectedMode) {
@@ -148,7 +148,7 @@ fun ActionButtons(
             }
         }
         Spacer(modifier = Modifier.width(8.dp))
-        BoilerplateDefaultButton(
+        AppDefaultButton(
             textId = R.string.btn_decrypt
         ) {
             when (selectedMode) {
@@ -173,13 +173,13 @@ fun ActionButtons(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
-        BoilerplateDefaultButton(
+        AppDefaultButton(
             textId = R.string.btn_encrypt
         ) {
             onEncrypt()
         }
         Spacer(modifier = Modifier.width(8.dp))
-        BoilerplateDefaultButton(
+        AppDefaultButton(
             textId = R.string.btn_decrypt
         ) {
             onDecrypt()
@@ -201,7 +201,7 @@ fun ResultInput(
 @Composable
 fun CopyToClipboardButton(textToCopy: String) {
     val context = LocalContext.current
-    BoilerplateDefaultButton(
+    AppDefaultButton(
         textId = R.string.btn_copy_to_clipboard
     ) {
         copyToClipboard(context, "Result Encryption/Decryption", textToCopy)
@@ -254,7 +254,7 @@ fun CommonInputText(
 }
 
 @Composable
-fun BoilerplateDefaultButton(
+fun AppDefaultButton(
     textId: Int,
     enabled: Boolean = true,
     color: Color = Amber700,

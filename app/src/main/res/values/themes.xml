@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.MobileBoilerplateAndroidCompose" parent="android:Theme.Material.Light.NoActionBar">
+    <style name="Theme.AndroidEncryptionExamples" parent="android:Theme.Material.Light.NoActionBar">
         <item name="android:statusBarColor">@color/purple_700</item>
     </style>
 
     <style name="Theme.App.Starting" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/teal_700</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
-        <item name="postSplashScreenTheme">@style/Theme.MobileBoilerplateAndroidCompose</item>
+        <item name="postSplashScreenTheme">@style/Theme.AndroidEncryptionExamples</item>
     </style>
 </resources>
