@@ -72,7 +72,7 @@ fun BiometricScreen(viewModel: BiometricScreenViewModel) {
     ) {
 
         item {
-
+            Spacer(modifier = Modifier.height(20.dp))
             TitleScreen(title = stringResource(id = R.string.bottom_nav_page3))
             Spacer(modifier = Modifier.height(20.dp))
 
@@ -149,6 +149,7 @@ fun BiometricScreen(viewModel: BiometricScreenViewModel) {
                     Spacer(modifier = Modifier.height(10.dp))
 
                     CopyToClipboardButton(textResult)
+                    Spacer(modifier = Modifier.height(20.dp))
                 }
 
 

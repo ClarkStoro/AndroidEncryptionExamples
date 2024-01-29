@@ -61,6 +61,7 @@ fun SaveRetrieveScreen(viewModel: CommonViewModel) {
     ) {
 
         item {
+            Spacer(modifier = Modifier.height(20.dp))
             TitleScreen(title = stringResource(id = R.string.bottom_nav_page2))
             Spacer(modifier = Modifier.height(20.dp))
 
@@ -118,6 +119,7 @@ fun SaveRetrieveScreen(viewModel: CommonViewModel) {
             ) {
                 viewModel.saveEncryptedData(textResult)
             }
+            Spacer(modifier = Modifier.height(20.dp))
         }
     }
 }

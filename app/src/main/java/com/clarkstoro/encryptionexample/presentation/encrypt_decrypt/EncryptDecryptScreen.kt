@@ -51,6 +51,7 @@ fun EncryptDecryptScreen(viewModel: CommonViewModel) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         item {
+            Spacer(modifier = Modifier.height(20.dp))
             TitleScreen(title = stringResource(id = R.string.bottom_nav_page1))
             Spacer(modifier = Modifier.height(20.dp))
 
@@ -85,6 +86,7 @@ fun EncryptDecryptScreen(viewModel: CommonViewModel) {
             Spacer(modifier = Modifier.height(10.dp))
 
             CopyToClipboardButton(textResult)
+            Spacer(modifier = Modifier.height(20.dp))
         }
     }
 }

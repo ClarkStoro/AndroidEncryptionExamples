@@ -50,6 +50,7 @@ fun AsymmetricEncryptDecryptScreen(viewModel: AsymmetricCryptoViewModel) {
     ) {
         item {
 
+            Spacer(modifier = Modifier.height(20.dp))
             TitleScreen(title = stringResource(id = R.string.bottom_nav_page4))
             Spacer(modifier = Modifier.height(20.dp))
 
@@ -58,6 +59,7 @@ fun AsymmetricEncryptDecryptScreen(viewModel: AsymmetricCryptoViewModel) {
                 label = stringResource(id = R.string.personal_public_key_hint),
                 value = personalPublicKey
             )
+            Spacer(modifier = Modifier.height(10.dp))
             CopyToClipboardButton(personalPublicKey)
 
             Spacer(modifier = Modifier.height(20.dp))
@@ -90,6 +92,7 @@ fun AsymmetricEncryptDecryptScreen(viewModel: AsymmetricCryptoViewModel) {
             Spacer(modifier = Modifier.height(10.dp))
 
             CopyToClipboardButton(textResult)
+            Spacer(modifier = Modifier.height(20.dp))
         }
 
     }
