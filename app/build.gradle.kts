@@ -89,4 +89,6 @@ dependencies {
 
     implementation(libs.security.crypto)
     implementation(libs.biometric)
+
+    implementation(libs.lifecycleCompose)
 }

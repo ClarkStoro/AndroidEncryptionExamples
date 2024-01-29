@@ -39,6 +39,7 @@ systemUiControllerVersion = "0.27.0"
 timberVersion = "5.0.1"
 securityCryptoVersion = "1.0.0"
 biometricVersion = "1.2.0-alpha05"
+lifecycleComposeVersion = "2.7.0"
 
 # Data module versions
 gsonVersion = "2.10"
@@ -84,6 +85,7 @@ systemUiController = { module = "com.google.accompanist:accompanist-systemuicont
 timberDependency = { module = "com.jakewharton.timber:timber", version.ref = "timberVersion" }
 uiTestManifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "composeUiVersion" }
 uiTooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "composeUiVersion" }
+lifecycleCompose = {module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycleComposeVersion"}
 
 # Data module libraries
 converterGson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofitVersion" }

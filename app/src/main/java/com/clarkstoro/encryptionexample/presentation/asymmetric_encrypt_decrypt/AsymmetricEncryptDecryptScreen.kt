@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.clarkstoro.encryptionexample.R
 import com.clarkstoro.encryptionexample.presentation.common.ActionButtons
 import com.clarkstoro.encryptionexample.presentation.common.CommonInputText
@@ -28,7 +29,7 @@ import com.clarkstoro.encryptionexample.presentation.common.TitleScreen
 fun AsymmetricEncryptDecryptScreen(viewModel: AsymmetricCryptoViewModel) {
 
     val personalPublicKey = viewModel.getPersonalPublicKey()
-    val textResult = viewModel.cipherTextResultFlow.collectAsState().value
+    val textResult = viewModel.cipherTextResultFlow.collectAsStateWithLifecycle().value
 
     var textToEncryptDecrypt by remember {
         mutableStateOf("")

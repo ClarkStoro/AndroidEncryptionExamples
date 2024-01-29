@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.clarkstoro.encryptionexample.R
 import com.clarkstoro.encryptionexample.presentation.CommonViewModel
 import com.clarkstoro.encryptionexample.presentation.common.ActionButtons
@@ -27,7 +28,7 @@ import com.clarkstoro.encryptionexample.presentation.common.TitleScreen
 
 @Composable
 fun EncryptDecryptScreen(viewModel: CommonViewModel) {
-    val textResult = viewModel.cipherTextResultFlow.collectAsState().value
+    val textResult = viewModel.cipherTextResultFlow.collectAsStateWithLifecycle().value
 
     val modesAvailable = CommonViewModel.CryptMode.entries
 

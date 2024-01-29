@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.clarkstoro.encryptionexample.R
 import com.clarkstoro.encryptionexample.presentation.CommonViewModel
 import com.clarkstoro.encryptionexample.presentation.common.ActionButtons
@@ -46,7 +47,7 @@ fun BiometricScreen(viewModel: BiometricScreenViewModel) {
     val context = LocalContext.current
     val biometricManager = remember { BiometricManager.from(context) }
 
-    val textResult = viewModel.cipherTextResultFlow.collectAsState().value
+    val textResult = viewModel.cipherTextResultFlow.collectAsStateWithLifecycle().value
 
     val modesAvailable = CommonViewModel.CryptMode.entries
 

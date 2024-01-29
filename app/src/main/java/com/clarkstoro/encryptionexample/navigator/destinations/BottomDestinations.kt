@@ -51,7 +51,7 @@ data object AsymmetricEncryptDecryptScreen: NavGraphDestinations(
     override val titleResId: Int
         get() = R.string.bottom_nav_page4
     override val selectedIconResId: Int
-        get() = R.drawable.ic_key
+        get() = R.drawable.ic_key_chain
     override val deselectedIconResId: Int
-        get() = R.drawable.ic_key
+        get() = R.drawable.ic_key_chain
 }
