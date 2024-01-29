@@ -1,5 +1,6 @@
 package com.clarkstoro.encryptionexample.presentation.common
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -23,7 +24,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -43,8 +43,6 @@ import com.clarkstoro.encryptionexample.R
 import com.clarkstoro.encryptionexample.presentation.CommonViewModel
 import com.clarkstoro.encryptionexample.ui.theme.Amber700
 import com.clarkstoro.encryptionexample.ui.theme.Dimens
-import com.clarkstoro.encryptionexample.ui.theme.Orange500
-import com.clarkstoro.encryptionexample.ui.theme.Teal200
 
 
 @Composable
@@ -53,11 +51,11 @@ fun TitleScreen(title: String) {
         text = title,
         modifier = Modifier,
         fontSize = 24.sp,
-        color = MaterialTheme.colorScheme.onSecondary
+        color = MaterialTheme.colorScheme.onSurface
     )
 }
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun IvModeSelector(
     selectedMode: CommonViewModel.CryptMode?,
@@ -67,13 +65,13 @@ fun IvModeSelector(
     val modesAvailable = CommonViewModel.CryptMode.entries
     var dropdownExpandedState by remember { mutableStateOf(false) }
 
-    ExposedDropdownMenuBox(
+    androidx.compose.material3.ExposedDropdownMenuBox(
         modifier = Modifier.fillMaxWidth(),
         expanded = dropdownExpandedState,
-        onExpandedChange = {dropdownExpandedState = !dropdownExpandedState}
+        onExpandedChange = { dropdownExpandedState = it }
     ) {
-        OutlinedTextField(
-            modifier = Modifier.fillMaxWidth(),
+        androidx.compose.material3.OutlinedTextField(
+            modifier = Modifier.menuAnchor().fillMaxWidth(),
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Done
             ),
@@ -81,7 +79,7 @@ fun IvModeSelector(
             value = selectedMode?.name.orEmpty(),
             readOnly = true,
             onValueChange = { },
-            label = { androidx.compose.material.Text(stringResource(id = R.string.pick_mode_hint)) },
+            label = { Text(stringResource(id = R.string.pick_mode_hint)) },
             trailingIcon = {
                 ExposedDropdownMenuDefaults.TrailingIcon(
                     expanded = dropdownExpandedState
@@ -89,6 +87,7 @@ fun IvModeSelector(
             }
         )
         ExposedDropdownMenu(
+            modifier = Modifier.background(MaterialTheme.colorScheme.surface),
             expanded = dropdownExpandedState,
             onDismissRequest = {
                 dropdownExpandedState = false
@@ -102,7 +101,8 @@ fun IvModeSelector(
                     }
                 ) {
                     Text(
-                        text = modeAvailable.name
+                        text = modeAvailable.name,
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                 }
             }
@@ -239,7 +239,11 @@ fun CommonInputText(
                     IconButton(
                         onClick = { onValueChange?.invoke("") }
                     ) {
-                        Icon(imageVector = Icons.Filled.Clear, contentDescription = stringResource(id = com.google.android.material.R.string.clear_text_end_icon_content_description))
+                        Icon(
+                            imageVector = Icons.Filled.Clear,
+                            contentDescription = stringResource(id = com.google.android.material.R.string.clear_text_end_icon_content_description),
+                            tint = MaterialTheme.colorScheme.onSurface
+                        )
                     }
                 }
                 else -> {}
@@ -247,13 +251,7 @@ fun CommonInputText(
         },
         singleLine = false,
         readOnly = isReadOnly,
-        shape = RoundedCornerShape(CornerSize(Dimens.size4)),
-        colors = TextFieldDefaults.textFieldColors(
-            containerColor = MaterialTheme.colorScheme.background,
-            focusedIndicatorColor = Orange500,
-            unfocusedIndicatorColor = Teal200,
-            textColor = MaterialTheme.colorScheme.onSecondary
-        ),
+        shape = RoundedCornerShape(CornerSize(4.dp)),
         modifier = Modifier.fillMaxWidth()
     )
 }

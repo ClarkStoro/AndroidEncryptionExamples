@@ -1,7 +1,6 @@
 package com.clarkstoro.encryptionexample
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
@@ -37,7 +36,7 @@ import com.clarkstoro.encryptionexample.navigator.destinations.EncryptDecryptScr
 import com.clarkstoro.encryptionexample.navigator.destinations.NavGraphDestinations
 import com.clarkstoro.encryptionexample.navigator.destinations.NavigationAction
 import com.clarkstoro.encryptionexample.navigator.graphs.EncryptionExampleNavGraph
-import com.clarkstoro.encryptionexample.ui.theme.BoilerplateComposeM3Theme
+import com.clarkstoro.encryptionexample.ui.theme.AppM3Theme
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -51,14 +50,14 @@ class MainActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            BoilerplateComposeM3Theme {
+            AppM3Theme {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val navController = rememberNavController()
-                    BoilerplateComposeMain(navController, navigator)
+                    EncryptionExampleMain(navController, navigator)
                 }
             }
         }
@@ -69,7 +68,7 @@ class MainActivity : FragmentActivity() {
 
 @ExperimentalMaterial3Api
 @Composable
-fun BoilerplateComposeMain(
+fun EncryptionExampleMain(
     navController: NavHostController = rememberNavController(),
     navigator: Navigator
 ) {
@@ -129,8 +128,8 @@ fun BottomBar(navController: NavHostController, navigator: Navigator, visible: B
         exit = slideOutVertically(targetOffsetY = { it })
     ) {
         NavigationBar(
-            containerColor = androidx.compose.material.MaterialTheme.colors.background,
-            contentColor = androidx.compose.material.MaterialTheme.colors.background
+            containerColor = MaterialTheme.colorScheme.background,
+            contentColor = MaterialTheme.colorScheme.onBackground
         ) {
             val backStackEntry by navController.currentBackStackEntryAsState()
             val currentRoute = backStackEntry?.destination?.route
@@ -158,7 +157,7 @@ fun BottomBar(navController: NavHostController, navigator: Navigator, visible: B
                                 painter = painterResource(id = item.selectedIconResId ),
                                 contentDescription = stringResource(id = item.titleResId),
                                 modifier = Modifier,
-                                //tint = if (isSelected) androidx.compose.material.MaterialTheme.colors.primary else androidx.compose.material.MaterialTheme.colors.onBackground
+                                tint = MaterialTheme.colorScheme.onBackground
                             )
                         }
                     )

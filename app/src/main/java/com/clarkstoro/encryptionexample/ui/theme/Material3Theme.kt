@@ -5,40 +5,21 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.ui.graphics.Color
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.platform.LocalConfiguration
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
-private val DarkColorScheme = darkColorScheme(
-    primary = Purple200,
-    secondary = Purple700,
-    tertiary = Teal200,
-    background = Color.Black,
-    surface = Color.Black,
-    onPrimary = Color.Black,
-    onSecondary = Color.White,
-    onBackground = Color.Black,
-    onSurface = Color.White,
-)
+private val DarkColorScheme = darkColorScheme()
 
-private val LightColorScheme = lightColorScheme(
-    primary = Purple500,
-    secondary = Purple700,
-    tertiary = Teal200,
-    background = Color.White,
-    surface = Color.White,
-    onPrimary = Color.White,
-    onSecondary = Color.Black,
-    onBackground = Color.Black,
-    onSurface = Color.Black,
-    outlineVariant = Color.White
-)
+private val LightColorScheme = lightColorScheme()
 
 // M3 stands for Material 3.
 
 @Composable
-fun BoilerplateComposeM3Theme(
+fun AppM3Theme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
@@ -53,11 +34,9 @@ fun BoilerplateComposeM3Theme(
         // Update all of the system bar colors to be transparent, and use
         // dark icons if we're in light theme
         systemUiController.setSystemBarsColor(
-            color = colorScheme.onPrimary,
+            color = colorScheme.background,
             darkIcons = useDarkIcons
         )
-
-        // setStatusBarColor() and setNavigationBarColor() also exist
 
         onDispose {}
     }
@@ -70,4 +49,22 @@ fun BoilerplateComposeM3Theme(
             content = content
         )
     }
+}
+
+object AppM3Theme {
+    val dimens: Dimensions
+        @Composable
+        get() = LocalAppDimens.current
+}
+
+
+private val LocalAppDimens = staticCompositionLocalOf { defaultDimensions }
+val Dimens: Dimensions
+    @Composable
+    get() = AppM3Theme.dimens
+
+@Composable
+fun ProvideDimens(dimensions: Dimensions, content: @Composable () -> Unit) {
+    val dimensionSet = remember { dimensions }
+    CompositionLocalProvider(LocalAppDimens provides dimensionSet, content = content)
 }
