@@ -1,4 +1,4 @@
-# Android Kotlin Encryption and Decryption Example
+# Android Kotlin Encryption and Decryption Examples
 
 This project is an Android application built to demonstrate encryption and decryption examples using AndroidKeyStore in Kotlin. The project utilizes Compose for UI, MVVM architecture, and Hilt for dependency injection.
 
