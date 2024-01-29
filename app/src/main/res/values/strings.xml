@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Encryption Example Demo</string>
+    <string name="app_name">Android Encryption Examples</string>
     <string name="unexpected_error">Unexpected error!</string>
 
     <string name="bottom_nav_page1">Encrypt/Decrypt</string>

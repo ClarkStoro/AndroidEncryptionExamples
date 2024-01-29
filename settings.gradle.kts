@@ -14,7 +14,7 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "MobileBoilerplateAndroidCompose"
+rootProject.name = "AndroidEncryptionExamples"
 include(":app")
 include(":data")
 include(":domain")

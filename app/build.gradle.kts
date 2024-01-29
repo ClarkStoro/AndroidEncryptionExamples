@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-    namespace = "com.clarkstoro.encryptionexample"
+    namespace = "com.clarkstoro.androidencryptionexamples"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "com.clarkstoro.encryptionexample"
+        applicationId = "com.clarkstoro.androidencryptionexamples"
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
         versionCode = 1
@@ -20,9 +20,6 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
-
-        // TODO: Insert your privacy policy URL here.
-        buildConfigField("String", "PRIVACY_POLICY_URL", "\"https://insertyoururlhere.com\"")
     }
 
     buildTypes {
