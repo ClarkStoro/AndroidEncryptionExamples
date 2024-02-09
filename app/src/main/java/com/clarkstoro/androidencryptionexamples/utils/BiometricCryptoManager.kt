@@ -37,7 +37,7 @@ class BiometricCryptoManager {
 
         private const val TRANSFORMATION = "$ALGORITHM/$CURRENT_BLOCK_MODE/$CURRENT_PADDING"
 
-        private const val ALIAS_KEY = "ENCRYPTION_ALIAS_KEY"
+        private const val ALIAS_KEY = "BIOMETRIC_ENCRYPTION_ALIAS_KEY"
         private const val KEY_SIZE = 256
 
         private const val APPEND_SEPARATOR = "|||"

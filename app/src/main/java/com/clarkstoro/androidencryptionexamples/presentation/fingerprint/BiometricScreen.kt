@@ -3,7 +3,6 @@ package com.clarkstoro.androidencryptionexamples.presentation.fingerprint
 import android.content.Context
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
-import androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL
 import androidx.biometric.BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED
 import androidx.biometric.BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE
 import androidx.biometric.BiometricManager.BIOMETRIC_SUCCESS
@@ -75,7 +74,7 @@ fun BiometricScreen(viewModel: BiometricScreenViewModel) {
             TitleScreen(title = stringResource(id = R.string.bottom_nav_page3))
             Spacer(modifier = Modifier.height(20.dp))
 
-            when (biometricManager.canAuthenticate(BIOMETRIC_STRONG or DEVICE_CREDENTIAL)) {
+            when (biometricManager.canAuthenticate(BIOMETRIC_STRONG)) {
                 BIOMETRIC_SUCCESS -> {
                     IvModeSelector(selectedMode, onModeSelected = {
                         selectedMode = it
@@ -184,9 +183,10 @@ private fun ErrorLayout(label: String) {
 }
 
 val promptInfo = BiometricPrompt.PromptInfo.Builder()
-    .setAllowedAuthenticators(BIOMETRIC_STRONG or DEVICE_CREDENTIAL)
+    .setAllowedAuthenticators(BIOMETRIC_STRONG)
     .setTitle("Biometric Authentication")
     .setSubtitle("Log in using your biometric credential")
+    .setNegativeButtonText("Cancel")
     .build()
 
 
