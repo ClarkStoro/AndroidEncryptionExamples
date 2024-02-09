@@ -90,8 +90,24 @@ class BiometricCryptoManager {
     }
 
     private fun getKey(): SecretKey {
-        val entry = keystore.getEntry(ALIAS_KEY, null) as? SecretKeyEntry
-        return entry?.secretKey ?: generateKey()
+        return getValidKeyOrNull() ?: generateKey()
+    }
+
+    private fun getValidKeyOrNull(): SecretKey? {
+        return try {
+            val existingKey = keystore.getEntry(ALIAS_KEY, null) as? SecretKeyEntry
+            existingKey?.secretKey?.also { sk ->
+                Cipher.getInstance(TRANSFORMATION).apply {
+                    init(Cipher.ENCRYPT_MODE, sk)
+                }
+            }
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    private fun isKeyValid(): Boolean {
+        return getValidKeyOrNull() != null
     }
 
     private fun generateKey(): SecretKey {
