@@ -18,6 +18,10 @@
     <string name="stored_value_hint">Stored encrypted value on datastore</string>
     <string name="btn_store_encrypted_value">STORE RESULT DATASTORE</string>
 
+    <string name="biometric_prompt_title">Biometric Authentication</string>
+    <string name="biometric_prompt_subtitle">Log in using your biometric credential</string>
+    <string name="biometric_prompt_negative">Cancel</string>
+
     <string name="personal_public_key_hint">Personal Public Key</string>
     <string name="public_key_to_encrypt">Public Key for Input Encryption</string>
 </resources>

@@ -1,5 +1,6 @@
 package com.clarkstoro.androidencryptionexamples.utils
 
+import android.os.Build
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import android.util.Base64
@@ -120,9 +121,22 @@ class BiometricCryptoManager {
                 .setKeySize(KEY_SIZE)
                 .setBlockModes(CURRENT_BLOCK_MODE)
                 .setEncryptionPaddings(CURRENT_PADDING)
-                .setUserAuthenticationRequired(true)
-                .setInvalidatedByBiometricEnrollment(false)
-                .build()
+                .apply {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                        setUserAuthenticationRequired(true)
+                        setInvalidatedByBiometricEnrollment(false)
+                        setUserAuthenticationParameters(
+                            0 /* duration */,
+                            KeyProperties.AUTH_BIOMETRIC_STRONG or KeyProperties.AUTH_DEVICE_CREDENTIAL
+                        )
+                    } else { // API <= Q
+                        // parameter "0" defaults to AUTH_BIOMETRIC_STRONG | AUTH_DEVICE_CREDENTIAL
+                        // parameter "-1" default to AUTH_BIOMETRIC_STRONG
+                        // source: https://cs.android.com/android/platform/superproject/+/android-11.0.0_r3:frameworks/base/keystore/java/android/security/keystore/KeyGenParameterSpec.java;l=1236-1246;drc=a811787a9642e6a9e563f2b7dfb15b5ae27ebe98
+                        setUserAuthenticationValidityDurationSeconds(0)
+                    }
+                }
+            .build()
             )
         }.generateKey()
     }

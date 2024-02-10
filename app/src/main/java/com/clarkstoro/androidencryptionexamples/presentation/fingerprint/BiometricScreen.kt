@@ -1,8 +1,10 @@
 package com.clarkstoro.androidencryptionexamples.presentation.fingerprint
 
 import android.content.Context
+import android.os.Build
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
+import androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL
 import androidx.biometric.BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED
 import androidx.biometric.BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE
 import androidx.biometric.BiometricManager.BIOMETRIC_SUCCESS
@@ -59,6 +61,23 @@ fun BiometricScreen(viewModel: BiometricScreenViewModel) {
         mutableStateOf("")
     }
 
+    val authenticators = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        BIOMETRIC_STRONG or DEVICE_CREDENTIAL
+    } else {
+        BIOMETRIC_STRONG
+    }
+
+    val promptInfo = BiometricPrompt.PromptInfo.Builder()
+        .setAllowedAuthenticators(authenticators)
+        .setTitle(stringResource(id = R.string.biometric_prompt_title))
+        .setSubtitle(stringResource(id = R.string.biometric_prompt_subtitle))
+        .apply {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+                setNegativeButtonText(stringResource(id = R.string.biometric_prompt_negative))
+            }
+        }
+        .build()
+
 
     LazyColumn(
         modifier = Modifier
@@ -74,7 +93,7 @@ fun BiometricScreen(viewModel: BiometricScreenViewModel) {
             TitleScreen(title = stringResource(id = R.string.bottom_nav_page3))
             Spacer(modifier = Modifier.height(20.dp))
 
-            when (biometricManager.canAuthenticate(BIOMETRIC_STRONG)) {
+            when (biometricManager.canAuthenticate(authenticators)) {
                 BIOMETRIC_SUCCESS -> {
                     IvModeSelector(selectedMode, onModeSelected = {
                         selectedMode = it
@@ -92,7 +111,8 @@ fun BiometricScreen(viewModel: BiometricScreenViewModel) {
                             val encryptCipher = viewModel.biometricCryptoManager.getEncryptCipher()
                             showEncryptBiometricPrompt(
                                 context,
-                                encryptCipher
+                                encryptCipher,
+                                promptInfo
                             ) {
                                 viewModel.encryptAuthAppendMode(textToEncryptDecrypt, encryptCipher)
                             }
@@ -105,7 +125,8 @@ fun BiometricScreen(viewModel: BiometricScreenViewModel) {
                             decryptCipher?.let {
                                 showEncryptBiometricPrompt(
                                     context,
-                                    decryptCipher
+                                    decryptCipher,
+                                    promptInfo
                                 ) {
                                     viewModel.decryptAuthAppendMode(
                                         textToEncryptDecrypt,
@@ -118,7 +139,8 @@ fun BiometricScreen(viewModel: BiometricScreenViewModel) {
                             val encryptCipher = viewModel.biometricCryptoManager.getEncryptCipher()
                             showEncryptBiometricPrompt(
                                 context,
-                                encryptCipher
+                                encryptCipher,
+                                promptInfo
                             ) {
                                 viewModel.encryptAuthArrayMode(textToEncryptDecrypt, encryptCipher)
                             }
@@ -131,7 +153,8 @@ fun BiometricScreen(viewModel: BiometricScreenViewModel) {
                             decryptCipher?.let {
                                 showEncryptBiometricPrompt(
                                     context,
-                                    decryptCipher
+                                    decryptCipher,
+                                    promptInfo
                                 ) {
                                     viewModel.decryptAuthArrayMode(
                                         textToEncryptDecrypt,
@@ -182,17 +205,11 @@ private fun ErrorLayout(label: String) {
     }
 }
 
-val promptInfo = BiometricPrompt.PromptInfo.Builder()
-    .setAllowedAuthenticators(BIOMETRIC_STRONG)
-    .setTitle("Biometric Authentication")
-    .setSubtitle("Log in using your biometric credential")
-    .setNegativeButtonText("Cancel")
-    .build()
-
 
 private fun showEncryptBiometricPrompt(
     context: Context,
     cipher: Cipher,
+    biometricPromptInfo: BiometricPrompt.PromptInfo,
     onFailed: (() -> Unit)? = null,
     onError: (() -> Unit)? = null,
     onSuccess: () -> Unit
@@ -219,5 +236,5 @@ private fun showEncryptBiometricPrompt(
         }
     )
 
-    biometricPromptEncrypt.authenticate(promptInfo, BiometricPrompt.CryptoObject(cipher))
+    biometricPromptEncrypt.authenticate(biometricPromptInfo, BiometricPrompt.CryptoObject(cipher))
 }
