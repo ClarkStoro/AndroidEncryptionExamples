@@ -32,7 +32,7 @@ This project is licensed under the [MIT License](https://github.com/clarkstoro/e
 
 ## Presentation Slides
 
-Slides related to this project will be available on GitHub at [Presentation Slides](https://github.com/clarkstoro/android-cryptography-talk).
+Slides related to this project will be available on GitHub at [Presentation Slides](https://github.com/ClarkStoro/AndroidEncryptionExamples/tree/main/slides).
 
 ## Contact
 
