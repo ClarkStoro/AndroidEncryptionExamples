@@ -6,11 +6,11 @@ This project is an Android application built to demonstrate encryption and decry
 
 The application consists of a bottom bar with four tabs:
 
-1. **AES Encryption/Decryption**: Allows users to choose between AES/CBC/PKCS7 or AES/GCM/NOPADDING encryption methods. Users can also choose how to save the Initialization Vector (IV) of encryption: Append Mode or Byte Array Mode (utilizes CryptoManager class).
+1. **AES Encryption/Decryption**: Allows users to choose between AES/CBC/PKCS7 or AES/GCM/NOPADDING encryption methods. Users can also choose how to save the Initialization Vector (IV) of encryption: Append Mode or Byte Array Mode (utilizes SymmetricCryptoManager class).
 
-2. **AES Encryption/Decryption with DataStore**: Similar to the first tab but with the option to save the final result in Android DataStore (utilizes CryptoManager class).
+2. **AES Encryption/Decryption with DataStore**: Similar to the first tab but with the option to save the final result in Android DataStore (utilizes SymmetricCryptoManager class).
 
-3. **AES Encryption/Decryption with Biometrics**: Similar to the first tab but with the addition of biometric authentication during key configuration (utilizes BiometricCryptoManager class).
+3. **AES Encryption/Decryption with Authentication**: Similar to the first tab but with the addition of authentication during key configuration (utilizes SymmetricAuthCryptoManager class).
 
 4. **RSA Encryption/Decryption with OAEPP**: Allows users to perform encryption/decryption using RSA and Optimal Asymmetric Encryption Padding (OAEPP). Users can choose which public key to use for encryption based on a provided Public Key in string format (utilizes AsymmetricCryptoManager class).
 

@@ -1,6 +1,5 @@
 package com.clarkstoro.androidencryptionexamples.utils
 
-import android.os.Build
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import android.util.Base64
@@ -17,7 +16,7 @@ import javax.crypto.spec.GCMParameterSpec
 import javax.crypto.spec.IvParameterSpec
 
 
-class BiometricCryptoManager {
+class SymmetricCryptoManager {
 
 
     companion object {
@@ -38,7 +37,7 @@ class BiometricCryptoManager {
 
         private const val TRANSFORMATION = "$ALGORITHM/$CURRENT_BLOCK_MODE/$CURRENT_PADDING"
 
-        private const val ALIAS_KEY = "BIOMETRIC_ENCRYPTION_ALIAS_KEY"
+        private const val ALIAS_KEY = "ENCRYPTION_ALIAS_KEY"
         private const val KEY_SIZE = 256
 
         private const val APPEND_SEPARATOR = "|||"
@@ -49,27 +48,9 @@ class BiometricCryptoManager {
         load(null)
     }
 
-    /**
-     * @return Cipher for Encryption with biometric
-     */
-    fun getEncryptCipher(): Cipher {
+    private fun getEncryptCipher(): Cipher {
         return Cipher.getInstance(TRANSFORMATION).apply {
             init(Cipher.ENCRYPT_MODE, getKey())
-        }
-    }
-
-    /**
-     * @return Cipher for Decryption with biometric by obtaining the IV from the text encrypted
-     */
-    fun getDecryptCipherFromStringAppendMode(encryptedText: String): Cipher? {
-        return splitEncryptedDataAppendMode(encryptedText)?.iv?.let { iv ->
-            getDecryptCipherForIv(iv)
-        }
-    }
-
-    fun getDecryptCipherFromStringByteArrayMode(encryptedText: String): Cipher? {
-        return splitEncryptedDataArrayMode(encryptedText)?.iv?.let { iv ->
-            getDecryptCipherForIv(iv)
         }
     }
 
@@ -121,34 +102,15 @@ class BiometricCryptoManager {
                 .setKeySize(KEY_SIZE)
                 .setBlockModes(CURRENT_BLOCK_MODE)
                 .setEncryptionPaddings(CURRENT_PADDING)
-                .apply {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                        setUserAuthenticationRequired(true)
-                        setInvalidatedByBiometricEnrollment(false)
-                        setUserAuthenticationParameters(
-                            0 /* duration */,
-                            KeyProperties.AUTH_BIOMETRIC_STRONG or KeyProperties.AUTH_DEVICE_CREDENTIAL
-                        )
-                    } else { // API <= Q
-                        // parameter "0" defaults to AUTH_BIOMETRIC_STRONG | AUTH_DEVICE_CREDENTIAL
-                        // parameter "-1" default to AUTH_BIOMETRIC_STRONG
-                        // source: https://cs.android.com/android/platform/superproject/+/android-11.0.0_r3:frameworks/base/keystore/java/android/security/keystore/KeyGenParameterSpec.java;l=1236-1246;drc=a811787a9642e6a9e563f2b7dfb15b5ae27ebe98
-                        setUserAuthenticationValidityDurationSeconds(0)
-                    }
-                }
-            .build()
+                .build()
             )
         }.generateKey()
     }
 
-    // ---------------------------------------------------------------------------------------------
 
-    /**
-     * Append Mode
-     */
-
-    fun encryptStringAppendMode(encryptCipher: Cipher, plainText: String): String? {
+    fun encryptStringAppendMode(plainText: String): String? {
         return try {
+            val encryptCipher = getEncryptCipher()
             val cipherText = encryptCipher.doFinal(plainText.toByteArray())
             val cipherTextBase64 = Base64.encodeToString(cipherText, Base64.DEFAULT)
             val ivBase64 = Base64.encodeToString(
@@ -163,10 +125,13 @@ class BiometricCryptoManager {
         }
     }
 
-    fun decryptStringAppendMode(decryptCipher: Cipher, strToDecode: String): String? {
+    fun decryptStringAppendMode(strToDecode: String): String? {
         return try {
-            val cipherText = splitEncryptedDataAppendMode(strToDecode)?.cipherText
-            val plainText = decryptCipher.doFinal(cipherText)
+            val ivAndCipherTextSplit = strToDecode.split(APPEND_SEPARATOR)
+            val iv = Base64.decode(ivAndCipherTextSplit[0], Base64.DEFAULT)
+            val cipherText = Base64.decode(ivAndCipherTextSplit[1], Base64.DEFAULT)
+
+            val plainText = getDecryptCipherForIv(initializationVector = iv).doFinal(cipherText)
 
             return String(plainText, StandardCharsets.UTF_8)
         } catch (e: Exception) {
@@ -175,14 +140,10 @@ class BiometricCryptoManager {
         }
     }
 
-    // ---------------------------------------------------------------------------------------------
 
-    /**
-     * Byte Array Mode
-     */
-
-    fun encryptToStringByteArrayMode(encryptCipher: Cipher, bytes: ByteArray): String? {
+    fun encryptToStringByteArrayMode(bytes: ByteArray): String? {
         return try {
+            val encryptCipher = getEncryptCipher()
             val cipherText = encryptCipher.doFinal(bytes)
             val outputStream = ByteArrayOutputStream()
             outputStream.use {
@@ -199,40 +160,11 @@ class BiometricCryptoManager {
         }
     }
 
-    fun decryptFromStringByteArrayMode(decryptCipher: Cipher, stringToDecode: String): ByteArray? {
+    fun decryptFromStringByteArrayMode(stringToDecode: String): ByteArray? {
         return try {
-            val cipherTextBytes = splitEncryptedDataArrayMode(stringToDecode)?.cipherText
-            decryptCipher.doFinal(cipherTextBytes)
-        } catch (e: Exception) {
-            Timber.e("Error: failed to decrypt string - Byte Array Mode:\n$e")
-            null
-        }
-    }
-
-    // ---------------------------------------------------------------------------------------------
-
-    /**
-     * Utils
-     */
-
-    private fun splitEncryptedDataAppendMode(encryptedText: String): EncryptedData? {
-        return try {
-            val ivAndCipherTextSplit = encryptedText.split(APPEND_SEPARATOR)
-            val iv = Base64.decode(ivAndCipherTextSplit[0], Base64.DEFAULT)
-            val cipherText = Base64.decode(ivAndCipherTextSplit[1], Base64.DEFAULT)
-
-            return EncryptedData(iv, cipherText)
-        } catch (e: Exception) {
-            null
-        }
-    }
-
-
-    private fun splitEncryptedDataArrayMode(encryptedText: String): EncryptedData? {
-        return try {
-            val decodedString = Base64.decode(encryptedText, Base64.DEFAULT)
+            val decodedString = Base64.decode(stringToDecode, Base64.DEFAULT)
             val inputStream = ByteArrayInputStream(decodedString)
-            return inputStream.use {
+            inputStream.use {
                 val ivSize = it.read()
                 val iv = ByteArray(ivSize)
                 it.read(iv)
@@ -241,32 +173,11 @@ class BiometricCryptoManager {
                 val cipherTextBytes = ByteArray(cipherTextBytesSize)
                 it.read(cipherTextBytes)
 
-                EncryptedData(iv, cipherTextBytes)
+                getDecryptCipherForIv(initializationVector = iv).doFinal(cipherTextBytes)
             }
         } catch (e: Exception) {
-           null
-        }
-    }
-
-
-    data class EncryptedData(
-        val iv: ByteArray,
-        val cipherText: ByteArray
-    ) {
-        override fun equals(other: Any?): Boolean {
-            if (this === other) return true
-            if (javaClass != other?.javaClass) return false
-
-            other as EncryptedData
-
-            if (!iv.contentEquals(other.iv)) return false
-            return cipherText.contentEquals(other.cipherText)
-        }
-
-        override fun hashCode(): Int {
-            var result = iv.contentHashCode()
-            result = 31 * result + cipherText.contentHashCode()
-            return result
+            Timber.e("Error: failed to decrypt string - Byte Array Mode:\n$e")
+            null
         }
     }
 }

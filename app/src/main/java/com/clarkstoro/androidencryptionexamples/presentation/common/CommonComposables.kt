@@ -35,10 +35,11 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.clarkstoro.androidencryptionexamples.R
-import com.clarkstoro.androidencryptionexamples.presentation.CommonViewModel
+import com.clarkstoro.androidencryptionexamples.presentation.SymmetricCryptographyCommonViewModel
 import com.clarkstoro.androidencryptionexamples.ui.theme.Amber700
 
 
@@ -48,18 +49,19 @@ fun TitleScreen(title: String) {
         text = title,
         modifier = Modifier,
         fontSize = 24.sp,
-        color = MaterialTheme.colorScheme.onSurface
+        color = MaterialTheme.colorScheme.onSurface,
+        textAlign = TextAlign.Center
     )
 }
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun IvModeSelector(
-    selectedMode: CommonViewModel.CryptMode?,
-    onModeSelected: (CommonViewModel.CryptMode) -> Unit
+    selectedMode: SymmetricCryptographyCommonViewModel.CryptMode?,
+    onModeSelected: (SymmetricCryptographyCommonViewModel.CryptMode) -> Unit
 ) {
     val focusManager = LocalFocusManager.current
-    val modesAvailable = CommonViewModel.CryptMode.entries
+    val modesAvailable = SymmetricCryptographyCommonViewModel.CryptMode.entries
     var dropdownExpandedState by remember { mutableStateOf(false) }
 
     androidx.compose.material3.ExposedDropdownMenuBox(
@@ -124,7 +126,7 @@ fun InputEncryptionDecryption(
 
 @Composable
 fun ActionButtons(
-    selectedMode: CommonViewModel.CryptMode?,
+    selectedMode: SymmetricCryptographyCommonViewModel.CryptMode?,
     onEncryptAppendMode: () -> Unit,
     onDecryptAppendMode: () -> Unit,
     onEncryptByteArrayMode: () -> Unit,
@@ -138,10 +140,10 @@ fun ActionButtons(
             textId = R.string.btn_encrypt
         ) {
             when (selectedMode) {
-                CommonViewModel.CryptMode.APPEND -> {
+                SymmetricCryptographyCommonViewModel.CryptMode.APPEND -> {
                     onEncryptAppendMode()
                 }
-                CommonViewModel.CryptMode.BYTE_ARRAY -> {
+                SymmetricCryptographyCommonViewModel.CryptMode.BYTE_ARRAY -> {
                     onEncryptByteArrayMode()
                 }
                 else -> {}
@@ -152,10 +154,10 @@ fun ActionButtons(
             textId = R.string.btn_decrypt
         ) {
             when (selectedMode) {
-                CommonViewModel.CryptMode.APPEND -> {
+                SymmetricCryptographyCommonViewModel.CryptMode.APPEND -> {
                     onDecryptAppendMode()
                 }
-                CommonViewModel.CryptMode.BYTE_ARRAY -> {
+                SymmetricCryptographyCommonViewModel.CryptMode.BYTE_ARRAY -> {
                     onDecryptByteArrayMode()
                 }
                 else -> {}

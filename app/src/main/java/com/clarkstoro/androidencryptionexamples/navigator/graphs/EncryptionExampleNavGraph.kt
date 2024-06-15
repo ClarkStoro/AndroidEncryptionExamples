@@ -10,16 +10,16 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import com.clarkstoro.androidencryptionexamples.navigator.Navigator
 import com.clarkstoro.androidencryptionexamples.navigator.Navigator.Companion.NAVIGATOR_KEY
-import com.clarkstoro.androidencryptionexamples.navigator.destinations.AsymmetricEncryptDecryptScreen
-import com.clarkstoro.androidencryptionexamples.navigator.destinations.BiometricScreen
-import com.clarkstoro.androidencryptionexamples.navigator.destinations.EncryptDecryptScreen
+import com.clarkstoro.androidencryptionexamples.navigator.destinations.AsymmetricScreen
+import com.clarkstoro.androidencryptionexamples.navigator.destinations.SymmetricAuthScreen
+import com.clarkstoro.androidencryptionexamples.navigator.destinations.SymmetricScreen
 import com.clarkstoro.androidencryptionexamples.navigator.destinations.MAIN_NAVIGATION_ROUTE_KEY
 import com.clarkstoro.androidencryptionexamples.navigator.destinations.NavDestinationArgs
-import com.clarkstoro.androidencryptionexamples.navigator.destinations.SaveRetrieveScreen
-import com.clarkstoro.androidencryptionexamples.presentation.asymmetric_encrypt_decrypt.AsymmetricEncryptDecryptScreen
-import com.clarkstoro.androidencryptionexamples.presentation.encrypt_decrypt.EncryptDecryptScreen
-import com.clarkstoro.androidencryptionexamples.presentation.fingerprint.BiometricScreen
-import com.clarkstoro.androidencryptionexamples.presentation.save_retrieve.SaveRetrieveScreen
+import com.clarkstoro.androidencryptionexamples.navigator.destinations.SymmetricStorageScreen
+import com.clarkstoro.androidencryptionexamples.presentation.asymmetric_cryptography.AsymmetricScreen
+import com.clarkstoro.androidencryptionexamples.presentation.symmetric_cryptography.SymmetricScreen
+import com.clarkstoro.androidencryptionexamples.presentation.symmetric_auth_cryptography.SymmetricAuthScreen
+import com.clarkstoro.androidencryptionexamples.presentation.symmetric_storage_cryptography.SymmetricStorageScreen
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
@@ -55,23 +55,23 @@ fun EncryptionExampleNavGraph(
     ) {
 
         navigation(
-            startDestination = EncryptDecryptScreen.route,
+            startDestination = SymmetricScreen.route,
             route = MAIN_NAVIGATION_ROUTE_KEY
         ) {
-            composable(EncryptDecryptScreen.route) {
-                EncryptDecryptScreen(hiltViewModel())
+            composable(SymmetricScreen.route) {
+                SymmetricScreen(hiltViewModel())
             }
 
-            composable(SaveRetrieveScreen.route) {
-                SaveRetrieveScreen(hiltViewModel())
+            composable(SymmetricStorageScreen.route) {
+                SymmetricStorageScreen(hiltViewModel())
             }
 
-            composable(BiometricScreen.route) {
-                BiometricScreen(hiltViewModel())
+            composable(SymmetricAuthScreen.route) {
+                SymmetricAuthScreen(hiltViewModel())
             }
 
-            composable(AsymmetricEncryptDecryptScreen.route) {
-                AsymmetricEncryptDecryptScreen(hiltViewModel())
+            composable(AsymmetricScreen.route) {
+                AsymmetricScreen(hiltViewModel())
             }
         }
     }

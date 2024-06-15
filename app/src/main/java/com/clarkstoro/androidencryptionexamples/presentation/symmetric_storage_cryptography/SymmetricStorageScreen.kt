@@ -1,4 +1,4 @@
-package com.clarkstoro.androidencryptionexamples.presentation.save_retrieve
+package com.clarkstoro.androidencryptionexamples.presentation.symmetric_storage_cryptography
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -20,7 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.clarkstoro.androidencryptionexamples.R
-import com.clarkstoro.androidencryptionexamples.presentation.CommonViewModel
+import com.clarkstoro.androidencryptionexamples.presentation.SymmetricCryptographyCommonViewModel
 import com.clarkstoro.androidencryptionexamples.presentation.common.ActionButtons
 import com.clarkstoro.androidencryptionexamples.presentation.common.AppDefaultButton
 import com.clarkstoro.androidencryptionexamples.presentation.common.CommonInputText
@@ -30,15 +30,18 @@ import com.clarkstoro.androidencryptionexamples.presentation.common.IvModeSelect
 import com.clarkstoro.androidencryptionexamples.presentation.common.ResultInput
 import com.clarkstoro.androidencryptionexamples.presentation.common.TitleScreen
 
+/**
+ * TAB 2: Symmetric Encryption / Decryption with Datastore
+ */
 @Composable
-fun SaveRetrieveScreen(viewModel: CommonViewModel) {
+fun SymmetricStorageScreen(viewModel: SymmetricCryptographyCommonViewModel) {
 
     val textResult = viewModel.cipherTextResultFlow.collectAsStateWithLifecycle().value
     val currentEncryptedStoredValue = viewModel.currentEncryptedStoredValueFlow.collectAsStateWithLifecycle().value
 
-    val modesAvailable = CommonViewModel.CryptMode.entries
+    val modesAvailable = SymmetricCryptographyCommonViewModel.CryptMode.entries
 
-    var selectedMode: CommonViewModel.CryptMode? by remember {
+    var selectedMode: SymmetricCryptographyCommonViewModel.CryptMode? by remember {
         mutableStateOf(modesAvailable.firstOrNull())
     }
 

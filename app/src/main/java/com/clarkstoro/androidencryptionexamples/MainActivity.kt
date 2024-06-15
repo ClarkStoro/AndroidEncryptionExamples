@@ -32,7 +32,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.clarkstoro.androidencryptionexamples.navigator.Navigator
 import com.clarkstoro.androidencryptionexamples.navigator.destinations.BottomNavItem
-import com.clarkstoro.androidencryptionexamples.navigator.destinations.EncryptDecryptScreen
+import com.clarkstoro.androidencryptionexamples.navigator.destinations.SymmetricScreen
 import com.clarkstoro.androidencryptionexamples.navigator.destinations.NavGraphDestinations
 import com.clarkstoro.androidencryptionexamples.navigator.destinations.NavigationAction
 import com.clarkstoro.androidencryptionexamples.navigator.graphs.EncryptionExampleNavGraph
@@ -145,7 +145,7 @@ fun BottomBar(navController: NavHostController, navigator: Navigator, visible: B
                                     override val destination: String get() = item.route
                                     override val navOptions
                                         get() = NavOptions.Builder()
-                                            .setPopUpTo(EncryptDecryptScreen.route, false)
+                                            .setPopUpTo(SymmetricScreen.route, false)
                                             .setLaunchSingleTop(true)
                                             .build()
 

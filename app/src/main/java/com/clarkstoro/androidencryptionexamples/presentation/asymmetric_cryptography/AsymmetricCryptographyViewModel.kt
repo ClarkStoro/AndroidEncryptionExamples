@@ -1,4 +1,4 @@
-package com.clarkstoro.androidencryptionexamples.presentation.asymmetric_encrypt_decrypt
+package com.clarkstoro.androidencryptionexamples.presentation.asymmetric_cryptography
 
 import androidx.lifecycle.ViewModel
 import com.clarkstoro.androidencryptionexamples.utils.AsymmetricCryptoManager
@@ -8,7 +8,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class AsymmetricCryptoViewModel @Inject constructor(
+class AsymmetricCryptographyViewModel @Inject constructor(
   private val asymmetricCryptoManager: AsymmetricCryptoManager
 ): ViewModel() {
 
@@ -16,7 +16,7 @@ class AsymmetricCryptoViewModel @Inject constructor(
 
     // Use the user publicKey for the sake of the example
     // You should put here the publicKey of the receiver of the encrypted message
-    val receiverPublicKey = asymmetricCryptoManager.getPublicKey()
+    private val receiverPublicKey = asymmetricCryptoManager.getPublicKey()
 
     fun getPersonalPublicKey() = asymmetricCryptoManager.getPublicKey()
 

@@ -2,8 +2,8 @@ package com.clarkstoro.androidencryptionexamples.navigator.destinations
 
 import com.clarkstoro.androidencryptionexamples.R
 
-data object EncryptDecryptScreen: NavGraphDestinations(
-    route = NavGraphDestinationKeys.ENCRYPT_DECRYPT.name,
+data object SymmetricScreen: NavGraphDestinations(
+    route = NavGraphDestinationKeys.SYMMETRIC_BASE.name,
     arguments = emptyList()
 ), BottomNavItem {
 
@@ -16,8 +16,8 @@ data object EncryptDecryptScreen: NavGraphDestinations(
         get() = R.drawable.ic_lock
 }
 
-data object SaveRetrieveScreen: NavGraphDestinations(
-    route = NavGraphDestinationKeys.SAVE_RETRIEVE.name,
+data object SymmetricStorageScreen: NavGraphDestinations(
+    route = NavGraphDestinationKeys.SYMMETRIC_STORAGE.name,
     arguments = emptyList()
 ), BottomNavItem {
 
@@ -30,8 +30,8 @@ data object SaveRetrieveScreen: NavGraphDestinations(
         get() = R.drawable.ic_save
 }
 
-data object BiometricScreen: NavGraphDestinations(
-    route = NavGraphDestinationKeys.BIOMETRIC.name,
+data object SymmetricAuthScreen: NavGraphDestinations(
+    route = NavGraphDestinationKeys.SYMMETRIC_AUTH.name,
     arguments = emptyList()
 ), BottomNavItem {
     // Bottom navigation
@@ -43,8 +43,8 @@ data object BiometricScreen: NavGraphDestinations(
         get() = R.drawable.ic_biometric
 }
 
-data object AsymmetricEncryptDecryptScreen: NavGraphDestinations(
-    route = NavGraphDestinationKeys.ASYMMETRIC_ENCRYPT_DECRYPT.name,
+data object AsymmetricScreen: NavGraphDestinations(
+    route = NavGraphDestinationKeys.ASYMMETRIC_BASE.name,
     arguments = emptyList()
 ), BottomNavItem {
     // Bottom navigation

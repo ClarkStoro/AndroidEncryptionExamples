@@ -2,10 +2,10 @@
     <string name="app_name">Android Encryption Examples</string>
     <string name="unexpected_error">Unexpected error!</string>
 
-    <string name="bottom_nav_page1">Encrypt/Decrypt</string>
-    <string name="bottom_nav_page2">Save/Retrieve</string>
-    <string name="bottom_nav_page3">Biometric</string>
-    <string name="bottom_nav_page4">Asymmetric Encrypt/Decrypt</string>
+    <string name="bottom_nav_page1">Symmetric\nEncrypt/Decrypt</string>
+    <string name="bottom_nav_page2">Symmetric\nSave/Retrieve</string>
+    <string name="bottom_nav_page3">Symmetric w/ Auth\nEncrypt/Decrypt</string>
+    <string name="bottom_nav_page4">Asymmetric\nEncrypt/Decrypt</string>
 
     <!-- Common -->
     <string name="btn_encrypt">ENCRYPT</string>
@@ -15,8 +15,8 @@
     <string name="pick_mode_hint">Pick an encryption/decryption mode</string>
     <string name="result_encryption_decryption_hint">Result encryption/decryption</string>
 
-    <string name="stored_value_hint">Stored encrypted value on datastore</string>
-    <string name="btn_store_encrypted_value">STORE RESULT DATASTORE</string>
+    <string name="stored_value_hint">Stored encrypted value</string>
+    <string name="btn_store_encrypted_value">STORE RESULT ON DATASTORE</string>
 
     <string name="biometric_prompt_title">Biometric Authentication</string>
     <string name="biometric_prompt_subtitle">Log in using your biometric credential</string>

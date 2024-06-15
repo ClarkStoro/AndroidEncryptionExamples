@@ -6,8 +6,8 @@ import com.clarkstoro.androidencryptionexamples.navigator.Navigator
 import com.clarkstoro.androidencryptionexamples.providers.resource_provider.ResourceProvider
 import com.clarkstoro.androidencryptionexamples.providers.resource_provider.ResourceProviderImpl
 import com.clarkstoro.androidencryptionexamples.utils.AsymmetricCryptoManager
-import com.clarkstoro.androidencryptionexamples.utils.BiometricCryptoManager
-import com.clarkstoro.androidencryptionexamples.utils.CryptoManager
+import com.clarkstoro.androidencryptionexamples.utils.SymmetricAuthCryptoManager
+import com.clarkstoro.androidencryptionexamples.utils.SymmetricCryptoManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -36,11 +36,11 @@ internal object AppModule {
 
     @Singleton
     @Provides
-    fun provideCryptoManager(): CryptoManager = CryptoManager()
+    fun provideCryptoManager(): SymmetricCryptoManager = SymmetricCryptoManager()
 
     @Singleton
     @Provides
-    fun provideBiometricCryptoManager(): BiometricCryptoManager = BiometricCryptoManager()
+    fun provideBiometricCryptoManager(): SymmetricAuthCryptoManager = SymmetricAuthCryptoManager()
 
     @Singleton
     @Provides

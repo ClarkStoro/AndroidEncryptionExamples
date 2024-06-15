@@ -1,4 +1,4 @@
-package com.clarkstoro.androidencryptionexamples.presentation.encrypt_decrypt
+package com.clarkstoro.androidencryptionexamples.presentation.asymmetric_cryptography
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -19,26 +19,27 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.clarkstoro.androidencryptionexamples.R
-import com.clarkstoro.androidencryptionexamples.presentation.CommonViewModel
 import com.clarkstoro.androidencryptionexamples.presentation.common.ActionButtons
+import com.clarkstoro.androidencryptionexamples.presentation.common.CommonInputText
 import com.clarkstoro.androidencryptionexamples.presentation.common.CopyToClipboardButton
 import com.clarkstoro.androidencryptionexamples.presentation.common.InputEncryptionDecryption
-import com.clarkstoro.androidencryptionexamples.presentation.common.IvModeSelector
 import com.clarkstoro.androidencryptionexamples.presentation.common.ResultInput
 import com.clarkstoro.androidencryptionexamples.presentation.common.TitleScreen
 
+/**
+ * TAB 4: Asymmetric Encryption / Decryption
+ */
 @Composable
-fun EncryptDecryptScreen(viewModel: CommonViewModel) {
+fun AsymmetricScreen(viewModel: AsymmetricCryptographyViewModel) {
+
+    val personalPublicKey = viewModel.getPersonalPublicKey()
     val textResult = viewModel.cipherTextResultFlow.collectAsStateWithLifecycle().value
-
-    val modesAvailable = CommonViewModel.CryptMode.entries
-
-    var selectedMode: CommonViewModel.CryptMode? by remember {
-        mutableStateOf(modesAvailable.firstOrNull())
-    }
 
     var textToEncryptDecrypt by remember {
         mutableStateOf("")
+    }
+    var publicKeyForEncryption by remember {
+        mutableStateOf(personalPublicKey) // use the user's public key just for example purpose
     }
 
     LazyColumn(
@@ -50,33 +51,41 @@ fun EncryptDecryptScreen(viewModel: CommonViewModel) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         item {
+
             Spacer(modifier = Modifier.height(20.dp))
-            TitleScreen(title = stringResource(id = R.string.bottom_nav_page1))
+            TitleScreen(title = stringResource(id = R.string.bottom_nav_page4))
             Spacer(modifier = Modifier.height(20.dp))
 
-            IvModeSelector(selectedMode, onModeSelected = {
-                selectedMode = it
-            })
+            CommonInputText(
+                isReadOnly = true,
+                label = stringResource(id = R.string.personal_public_key_hint),
+                value = personalPublicKey
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+            CopyToClipboardButton(personalPublicKey)
+
+            Spacer(modifier = Modifier.height(20.dp))
 
             InputEncryptionDecryption(
                 textToEncryptDecrypt = textToEncryptDecrypt,
                 onValueChange = { textToEncryptDecrypt = it },
             )
+            CommonInputText(
+                isReadOnly = false,
+                label = stringResource(id = R.string.public_key_to_encrypt),
+                value = publicKeyForEncryption,
+                onValueChange = {
+                    publicKeyForEncryption = it
+                }
+            )
             Spacer(modifier = Modifier.height(10.dp))
 
             ActionButtons(
-                selectedMode = selectedMode,
-                onEncryptAppendMode = {
-                    viewModel.encryptTextAppendingMode(textToEncryptDecrypt)
+                onEncrypt = {
+                    viewModel.encryptText(textToEncryptDecrypt, publicKeyForEncryption)
                 },
-                onDecryptAppendMode = {
-                    viewModel.decryptAppendingMode(textToEncryptDecrypt)
-                },
-                onEncryptByteArrayMode = {
-                    viewModel.encryptTextArrayMode(textToEncryptDecrypt)
-                },
-                onDecryptByteArrayMode = {
-                    viewModel.decryptArrayMode(textToEncryptDecrypt)
+                onDecrypt = {
+                    viewModel.decryptText(textToEncryptDecrypt)
                 }
             )
             Spacer(modifier = Modifier.height(18.dp))
@@ -87,6 +96,7 @@ fun EncryptDecryptScreen(viewModel: CommonViewModel) {
             CopyToClipboardButton(textResult)
             Spacer(modifier = Modifier.height(20.dp))
         }
+
     }
 }
 

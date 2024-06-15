@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.clarkstoro.domain.usecases.ListenUpdatesEncryptedDataStoredUseCase
 import com.clarkstoro.domain.usecases.StoreEncryptedDataUseCase
-import com.clarkstoro.androidencryptionexamples.utils.CryptoManager
+import com.clarkstoro.androidencryptionexamples.utils.SymmetricCryptoManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -14,8 +14,8 @@ import java.nio.charset.StandardCharsets
 import javax.inject.Inject
 
 @HiltViewModel
-class CommonViewModel @Inject constructor(
-    private val cryptoManager: CryptoManager,
+class SymmetricCryptographyCommonViewModel @Inject constructor(
+    private val symmetricCryptoManager: SymmetricCryptoManager,
     private val storeEncryptedDataUseCase: StoreEncryptedDataUseCase,
     private val listenUpdatesEncryptedDataStoredUseCase: ListenUpdatesEncryptedDataStoredUseCase
 ) : ViewModel() {
@@ -33,7 +33,7 @@ class CommonViewModel @Inject constructor(
      */
 
     fun encryptTextAppendingMode(plainText: String) {
-        cryptoManager.encryptStringAppendMode(plainText)?.let { encryptedText ->
+        symmetricCryptoManager.encryptStringAppendMode(plainText)?.let { encryptedText ->
             Timber.d("Append Mode - Encrypted Text (iv + cipher text): $encryptedText")
             cipherTextResultFlow.tryEmit(encryptedText)
         } ?: run {
@@ -42,7 +42,7 @@ class CommonViewModel @Inject constructor(
     }
 
     fun decryptAppendingMode(textToDecrypt: String) {
-        cryptoManager.decryptStringAppendMode(textToDecrypt)?.let { plainTextDecryptedBytes ->
+        symmetricCryptoManager.decryptStringAppendMode(textToDecrypt)?.let { plainTextDecryptedBytes ->
             Timber.d("Append Mode - Decrypted Plain Text: $plainTextDecryptedBytes")
             cipherTextResultFlow.tryEmit(plainTextDecryptedBytes)
         } ?: run {
@@ -57,7 +57,7 @@ class CommonViewModel @Inject constructor(
      */
 
     fun encryptTextArrayMode(plainText: String) {
-        cryptoManager.encryptToStringByteArrayMode(plainText.toByteArray())?.let { encryptedText ->
+        symmetricCryptoManager.encryptToStringByteArrayMode(plainText.toByteArray())?.let { encryptedText ->
             Timber.d("Byte Array Mode - Encrypted Text (iv + cipher text): $encryptedText")
             cipherTextResultFlow.tryEmit(encryptedText)
         } ?: run {
@@ -66,7 +66,7 @@ class CommonViewModel @Inject constructor(
     }
 
     fun decryptArrayMode(textToDecrypt: String) {
-        cryptoManager.decryptFromStringByteArrayMode(textToDecrypt)?.let { plainTextDecryptedBytes ->
+        symmetricCryptoManager.decryptFromStringByteArrayMode(textToDecrypt)?.let { plainTextDecryptedBytes ->
             val plainTextDecrypted = String(plainTextDecryptedBytes, StandardCharsets.UTF_8)
             Timber.d("Byte Array Mode - Decrypted Plain Text: $plainTextDecrypted")
             cipherTextResultFlow.tryEmit(plainTextDecrypted)

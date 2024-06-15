@@ -1,4 +1,4 @@
-package com.clarkstoro.androidencryptionexamples.presentation.fingerprint
+package com.clarkstoro.androidencryptionexamples.presentation.symmetric_auth_cryptography
 
 import android.content.Context
 import android.os.Build
@@ -34,7 +34,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.clarkstoro.androidencryptionexamples.R
-import com.clarkstoro.androidencryptionexamples.presentation.CommonViewModel
+import com.clarkstoro.androidencryptionexamples.presentation.SymmetricCryptographyCommonViewModel
 import com.clarkstoro.androidencryptionexamples.presentation.common.ActionButtons
 import com.clarkstoro.androidencryptionexamples.presentation.common.CopyToClipboardButton
 import com.clarkstoro.androidencryptionexamples.presentation.common.InputEncryptionDecryption
@@ -43,17 +43,20 @@ import com.clarkstoro.androidencryptionexamples.presentation.common.ResultInput
 import com.clarkstoro.androidencryptionexamples.presentation.common.TitleScreen
 import javax.crypto.Cipher
 
+/**
+ * TAB 3: Symmetric Encryption / Decryption with Authentication
+ */
 @Composable
-fun BiometricScreen(viewModel: BiometricScreenViewModel) {
+fun SymmetricAuthScreen(viewModel: SymmetricAuthScreenViewModel) {
 
     val context = LocalContext.current
     val biometricManager = remember { BiometricManager.from(context) }
 
     val textResult = viewModel.cipherTextResultFlow.collectAsStateWithLifecycle().value
 
-    val modesAvailable = CommonViewModel.CryptMode.entries
+    val modesAvailable = SymmetricCryptographyCommonViewModel.CryptMode.entries
 
-    var selectedMode: CommonViewModel.CryptMode? by remember {
+    var selectedMode: SymmetricCryptographyCommonViewModel.CryptMode? by remember {
         mutableStateOf(modesAvailable.firstOrNull())
     }
 
@@ -108,7 +111,7 @@ fun BiometricScreen(viewModel: BiometricScreenViewModel) {
                     ActionButtons(
                         selectedMode = selectedMode,
                         onEncryptAppendMode = {
-                            val encryptCipher = viewModel.biometricCryptoManager.getEncryptCipher()
+                            val encryptCipher = viewModel.symmetricAuthCryptoManager.getEncryptCipher()
                             showEncryptBiometricPrompt(
                                 context,
                                 encryptCipher,
@@ -119,7 +122,7 @@ fun BiometricScreen(viewModel: BiometricScreenViewModel) {
                         },
                         onDecryptAppendMode = {
                             val decryptCipher =
-                                viewModel.biometricCryptoManager.getDecryptCipherFromStringAppendMode(
+                                viewModel.symmetricAuthCryptoManager.getDecryptCipherFromStringAppendMode(
                                     textToEncryptDecrypt
                                 )
                             decryptCipher?.let {
@@ -136,7 +139,7 @@ fun BiometricScreen(viewModel: BiometricScreenViewModel) {
                             }
                         },
                         onEncryptByteArrayMode = {
-                            val encryptCipher = viewModel.biometricCryptoManager.getEncryptCipher()
+                            val encryptCipher = viewModel.symmetricAuthCryptoManager.getEncryptCipher()
                             showEncryptBiometricPrompt(
                                 context,
                                 encryptCipher,
@@ -147,7 +150,7 @@ fun BiometricScreen(viewModel: BiometricScreenViewModel) {
                         },
                         onDecryptByteArrayMode = {
                             val decryptCipher =
-                                viewModel.biometricCryptoManager.getDecryptCipherFromStringByteArrayMode(
+                                viewModel.symmetricAuthCryptoManager.getDecryptCipherFromStringByteArrayMode(
                                     textToEncryptDecrypt
                                 )
                             decryptCipher?.let {
